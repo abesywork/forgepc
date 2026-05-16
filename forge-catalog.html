@@ -1,0 +1,1447 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="theme-color" content="#07080A" />
+<title>FORGE / Catalog — Components</title>
+<meta name="description" content="Каталог компонентов FORGE. Графитовая cyber-luxury эстетика. Фильтры, сортировка, benchmarks, FPS-таблицы." />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT@9..144,300..900,30..100&family=JetBrains+Mono:wght@300;400;500;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --ink-1000:#040506; --ink-950:#07080A; --ink-900:#0D0F12; --ink-850:#101317;
+  --ink-800:#15181D; --ink-700:#1C2026; --ink-600:#2A2F37;
+  --line:rgba(255,255,255,.06); --line-strong:rgba(255,255,255,.12);
+  --ink-50:#ECEEF1; --ink-200:#C8CDD4; --ink-300:#9AA3AE; --ink-400:#7A8390; --ink-500:#5A626D;
+  --cyan:#7CF6FF; --cyan-soft:#2EE6F6; --cyan-deep:#0A6470;
+  --signal-red:#FF4D5E; --signal-amber:#FFB454; --signal-green:#7EE787;
+  --ease: cubic-bezier(.2,.8,.2,1); --t: 320ms;
+  --display: "Fraunces", serif; --sans: "Space Grotesk", system-ui, sans-serif; --mono: "JetBrains Mono", monospace;
+  --container: 1360px;
+}
+*{box-sizing:border-box} html,body{margin:0;padding:0} html{scroll-behavior:smooth}
+body{
+  font-family: var(--sans); color: var(--ink-50);
+  background: radial-gradient(900px 700px at 80% -10%, rgba(124,246,255,.05), transparent 60%), var(--ink-950);
+  -webkit-font-smoothing: antialiased; overflow-x: hidden;
+}
+body::before{
+  content:""; position:fixed; inset:0; pointer-events:none; z-index:1;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .05 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  opacity:.45; mix-blend-mode: overlay;
+}
+.grid-bg{
+  position:fixed; inset:0; pointer-events:none; z-index:0;
+  background-image:
+    linear-gradient(to right, rgba(255,255,255,.022) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255,255,255,.022) 1px, transparent 1px);
+  background-size: 80px 80px;
+  mask-image: radial-gradient(1100px 700px at 50% 30%, #000 30%, transparent 75%);
+}
+::selection{ background: var(--cyan); color: var(--ink-1000);}
+a{color:inherit; text-decoration:none}
+button{font:inherit; color:inherit; background:none; border:0; cursor:pointer}
+input,select{font:inherit; color:inherit}
+
+.container{ max-width: var(--container); margin: 0 auto; padding: 0 28px; position: relative; z-index: 2;}
+.mono{font-family: var(--mono);} .italic{ font-style: italic; font-variation-settings:"opsz" 144,"SOFT" 80;}
+h1,h2,h3,h4{ font-family: var(--display); font-weight: 400; margin: 0; letter-spacing: -.02em;}
+h1{ font-size: clamp(48px, 6.4vw, 96px); line-height: .95; font-variation-settings:"opsz" 144, "SOFT" 50;}
+h2{ font-size: clamp(34px, 4vw, 60px); line-height: 1;}
+h3{ font-size: 22px; line-height: 1.15;}
+.eyebrow{
+  font-family: var(--mono); font-size: 11px; letter-spacing: .22em; text-transform: uppercase;
+  color: var(--ink-400); display:inline-flex; align-items:center; gap: 10px;
+}
+.eyebrow::before{ content:""; width:28px; height:1px; background: var(--cyan); box-shadow: 0 0 12px var(--cyan);}
+
+/* ========== NAV ========== */
+.nav{
+  position: sticky; top:0; z-index:50;
+  backdrop-filter: blur(20px) saturate(140%);
+  background: linear-gradient(to bottom, rgba(7,8,10,.85), rgba(7,8,10,.55));
+  border-bottom: 1px solid var(--line);
+}
+.nav-inner{
+  display:flex; align-items:center; justify-content:space-between; height: 72px;
+  max-width: var(--container); margin: 0 auto; padding: 0 28px;
+}
+.brand{display:flex; align-items:center; gap:12px; font-family: var(--display); font-size: 22px; letter-spacing: .04em;}
+.brand-mark{
+  width:30px; height:30px;
+  background: conic-gradient(from 200deg, var(--cyan), transparent 60%);
+  border-radius:50%;
+  mask: radial-gradient(circle at 50% 50%, transparent 38%, #000 39%, #000 50%, transparent 51%);
+  -webkit-mask: radial-gradient(circle at 50% 50%, transparent 38%, #000 39%, #000 50%, transparent 51%);
+  animation: spin 14s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg);}}
+.brand-text{ display:flex; flex-direction:column; line-height:1;}
+.brand-text small{ font-family: var(--mono); font-size: 9px; letter-spacing: .32em; color: var(--ink-400); margin-top: 4px;}
+
+.nav-links{ display:flex; gap: 32px;}
+.nav-links a{
+  font-family: var(--mono); font-size:12px; letter-spacing:.14em; text-transform:uppercase;
+  color: var(--ink-300); padding: 6px 0; position:relative; transition: color var(--t) var(--ease);
+}
+.nav-links a::after{
+  content:""; position:absolute; left:0; bottom:0; height:1px; width:0; background: var(--cyan);
+  transition: width var(--t) var(--ease); box-shadow: 0 0 8px var(--cyan);
+}
+.nav-links a:hover{ color: var(--ink-50);}
+.nav-links a:hover::after, .nav-links a.active::after{ width:100%;}
+
+.btn{
+  display:inline-flex; align-items:center; gap:10px; padding: 12px 18px; border-radius:2px;
+  font-family: var(--mono); font-size:11px; letter-spacing:.18em; text-transform:uppercase;
+  border:1px solid var(--line-strong); background: var(--ink-850); color: var(--ink-50);
+  transition: all var(--t) var(--ease);
+}
+.btn:hover{ border-color: rgba(124,246,255,.5); box-shadow: 0 0 0 1px rgba(124,246,255,.25), 0 0 30px -8px rgba(124,246,255,.35); transform: translateY(-1px);}
+.btn-primary{ background: linear-gradient(180deg, var(--cyan), var(--cyan-soft)); color: var(--ink-1000); border-color: transparent; font-weight: 700;}
+.btn-primary:hover{ filter: brightness(1.05); box-shadow: 0 0 32px -6px var(--cyan);}
+.arrow{ transition: transform var(--t) var(--ease);}
+.btn:hover .arrow{ transform: translateX(4px);}
+
+/* ========== CATALOG HEAD ========== */
+.cat-head{
+  padding: 64px 0 36px; position: relative;
+}
+.cat-title-row{
+  display:grid; grid-template-columns: 2fr 1fr; gap: 40px; align-items: end;
+}
+.crumb{ font-family: var(--mono); font-size: 11px; letter-spacing:.18em; text-transform: uppercase; color: var(--ink-400); margin-bottom: 16px;}
+.crumb b{ color: var(--ink-50); font-weight: 500;}
+.crumb .sep{ color: var(--ink-600); margin: 0 10px;}
+
+.cat-count{ display:flex; flex-direction:column; align-items:flex-end; gap: 6px;}
+.cat-count .n{ font-family: var(--display); font-size: 64px; line-height: 1; font-variation-settings:"opsz" 144, "SOFT" 40;}
+.cat-count .l{ font-family: var(--mono); font-size: 10px; letter-spacing:.22em; text-transform: uppercase; color: var(--ink-400);}
+
+/* tabs */
+.tabs{
+  margin-top: 36px; display:flex; gap:0;
+  border-bottom: 1px solid var(--line);
+}
+.tab{
+  font-family: var(--mono); font-size: 11px; letter-spacing: .18em; text-transform: uppercase;
+  padding: 14px 22px; color: var(--ink-400);
+  border-bottom: 1px solid transparent; margin-bottom: -1px;
+  transition: all var(--t) var(--ease);
+  display:inline-flex; align-items:center; gap:10px;
+}
+.tab:hover{ color: var(--ink-50);}
+.tab.active{ color: var(--ink-50); border-bottom-color: var(--cyan);}
+.tab .ct{ font-family: var(--mono); color: var(--ink-500); font-size: 10px;}
+
+/* ========== CATALOG LAYOUT ========== */
+.cat-layout{
+  display:grid; grid-template-columns: 280px 1fr; gap: 40px;
+  padding: 40px 0 80px;
+}
+@media (max-width: 1000px){ .cat-layout{ grid-template-columns: 1fr;} }
+
+/* sidebar filters */
+.filters{
+  position: sticky; top: 96px;
+  align-self: start;
+  border: 1px solid var(--line);
+  background: var(--ink-900);
+  border-radius: 3px;
+  padding: 22px 22px 24px;
+  display:flex; flex-direction:column; gap: 26px;
+}
+.filter-title{
+  font-family: var(--mono); font-size: 10px; letter-spacing: .22em; text-transform: uppercase;
+  color: var(--ink-400);
+  display:flex; align-items:center; justify-content:space-between;
+}
+.filter-group{ display:flex; flex-direction:column; gap: 10px;}
+.f-check{
+  display:flex; align-items:center; justify-content: space-between; gap: 10px; cursor: pointer;
+  padding: 4px 0;
+  font-size: 13.5px;
+  transition: color var(--t) var(--ease);
+}
+.f-check:hover{ color: var(--cyan);}
+.f-check input{ display: none;}
+.f-check .box{
+  width: 14px; height: 14px; border: 1px solid var(--ink-600); border-radius: 1px; position:relative;
+  background: var(--ink-850); transition: all var(--t) var(--ease);
+}
+.f-check input:checked + .box{ background: var(--cyan); border-color: var(--cyan);}
+.f-check input:checked + .box::after{
+  content:""; position:absolute; left:3px; top:0; width: 4px; height: 8px;
+  border: solid var(--ink-1000); border-width: 0 2px 2px 0; transform: rotate(45deg);
+}
+.f-check .ct{ font-family: var(--mono); font-size: 11px; color: var(--ink-500);}
+.f-check .lab{ display:flex; align-items:center; gap: 10px;}
+
+.price-range{ display:flex; align-items:center; gap: 8px; font-family: var(--mono); font-size: 11px;}
+.price-range input{
+  background: var(--ink-850); border: 1px solid var(--line-strong); border-radius: 2px;
+  padding: 8px 10px; width: 100%; color: var(--ink-50);
+  font-family: var(--mono); font-size: 12px;
+}
+.price-range input:focus{ outline: none; border-color: var(--cyan);}
+
+.range-row{ display:flex; align-items:center; gap: 14px;}
+input[type="range"]{
+  -webkit-appearance: none; appearance: none;
+  height: 2px; background: var(--ink-700); border-radius: 1px;
+  flex: 1; outline: none;
+}
+input[type="range"]::-webkit-slider-thumb{
+  -webkit-appearance: none; appearance: none;
+  width: 14px; height: 14px; border-radius: 50%; background: var(--cyan);
+  box-shadow: 0 0 12px var(--cyan); cursor: pointer; border: 0;
+}
+input[type="range"]::-moz-range-thumb{
+  width: 14px; height: 14px; border-radius: 50%; background: var(--cyan);
+  box-shadow: 0 0 12px var(--cyan); border: 0; cursor: pointer;
+}
+
+.filter-reset{
+  margin-top: 4px;
+  font-family: var(--mono); font-size: 11px; letter-spacing: .18em; text-transform: uppercase;
+  color: var(--ink-400); align-self: flex-start;
+  border-bottom: 1px solid var(--line-strong); padding-bottom: 1px;
+  transition: color var(--t) var(--ease);
+}
+.filter-reset:hover{ color: var(--cyan);}
+
+/* ========== RESULTS HEAD (search/sort) ========== */
+.results-head{
+  display:flex; align-items:center; justify-content: space-between; gap: 16px;
+  margin-bottom: 22px;
+}
+.search{
+  position:relative; flex: 1; max-width: 480px;
+}
+.search input{
+  width: 100%;
+  background: var(--ink-900); border: 1px solid var(--line); border-radius: 2px;
+  padding: 13px 14px 13px 42px;
+  font-family: var(--mono); font-size: 13px; color: var(--ink-50);
+  transition: all var(--t) var(--ease);
+}
+.search input:focus{ outline:none; border-color: var(--cyan); box-shadow: 0 0 0 1px rgba(124,246,255,.25);}
+.search svg{
+  position:absolute; left: 14px; top: 50%; transform: translateY(-50%);
+  width:16px; height:16px; color: var(--ink-400);
+}
+.sort-row{ display:flex; align-items:center; gap: 12px;}
+.sort-row .lab{ font-family: var(--mono); font-size: 10px; letter-spacing: .22em; text-transform: uppercase; color: var(--ink-400);}
+.select-mini{
+  background: var(--ink-900); border:1px solid var(--line); border-radius: 2px;
+  padding: 12px 36px 12px 14px; font-family: var(--mono); font-size: 12px;
+  color: var(--ink-50); cursor: pointer;
+  appearance: none; -webkit-appearance:none;
+  background-image: linear-gradient(45deg, transparent 50%, var(--cyan) 50%), linear-gradient(135deg, var(--cyan) 50%, transparent 50%);
+  background-position: calc(100% - 18px) 50%, calc(100% - 12px) 50%;
+  background-size: 6px 6px; background-repeat: no-repeat;
+}
+.select-mini:focus{ outline:none; border-color: var(--cyan);}
+
+.view-toggle{ display:inline-flex; border:1px solid var(--line); border-radius: 2px; overflow: hidden;}
+.view-toggle button{
+  padding: 11px 14px; color: var(--ink-400); transition: all var(--t) var(--ease);
+}
+.view-toggle button.on{ color: var(--cyan); background: var(--ink-850);}
+
+/* ========== PRODUCT GRID ========== */
+.grid{
+  display:grid; grid-template-columns: repeat(3, 1fr); gap: 1px;
+  background: var(--line); border: 1px solid var(--line);
+}
+@media (max-width: 1100px){ .grid{ grid-template-columns: repeat(2, 1fr);}}
+@media (max-width: 640px){ .grid{ grid-template-columns: 1fr;}}
+
+.card{
+  background: var(--ink-900);
+  padding: 22px 22px 24px;
+  display:flex; flex-direction:column;
+  cursor: pointer;
+  transition: background var(--t) var(--ease);
+  position: relative;
+  min-height: 380px;
+}
+.card:hover{ background: var(--ink-850);}
+.card:hover .card-img > svg{ transform: translateY(-4px) scale(1.04);}
+.card:hover .card-name{ color: var(--cyan);}
+
+.card-tag{
+  font-family: var(--mono); font-size: 10px; letter-spacing: .22em; text-transform: uppercase;
+  color: var(--ink-400); display:inline-flex; align-items: center; gap: 8px;
+}
+.card-tag .dot{ width: 6px; height: 6px; border-radius:50%; background: var(--cyan); box-shadow: 0 0 8px var(--cyan);}
+.card-tag.amd .dot{ background: var(--signal-red); box-shadow: 0 0 8px var(--signal-red);}
+.card-tag.intel .dot{ background: var(--cyan-soft); box-shadow: 0 0 8px var(--cyan-soft);}
+.card-tag.nvidia .dot{ background: var(--signal-green); box-shadow: 0 0 8px var(--signal-green);}
+
+.card-img{
+  margin-top: 12px;
+  height: 140px;
+  display:flex; align-items:center; justify-content:center;
+  background:
+    radial-gradient(200px 80px at 50% 100%, rgba(124,246,255,.08), transparent 70%),
+    linear-gradient(180deg, transparent, rgba(255,255,255,.02));
+  border-radius: 2px;
+  overflow: hidden;
+}
+.card-img > svg{ width: 78%; height: 100%; transition: transform 500ms var(--ease);}
+
+.card-name{ margin-top: 16px; font-family: var(--display); font-size: 22px; line-height: 1.1; transition: color var(--t) var(--ease);}
+.card-sub{ margin-top: 6px; font-family: var(--mono); font-size: 11px; color: var(--ink-400); letter-spacing: .04em;}
+
+.card-foot{
+  margin-top: auto; padding-top: 20px;
+  display:flex; align-items: baseline; justify-content: space-between;
+  border-top: 1px solid var(--line);
+}
+.card-price{ font-family: var(--display); font-size: 22px;}
+.card-cta{ font-family: var(--mono); font-size: 10px; letter-spacing: .18em; text-transform: uppercase; color: var(--cyan);}
+
+.card-stock{
+  position: absolute; top: 18px; right: 22px;
+  font-family: var(--mono); font-size: 9px; letter-spacing: .22em; text-transform: uppercase;
+  color: var(--signal-green);
+  display: inline-flex; align-items: center; gap: 6px;
+}
+.card-stock .pdot{ width: 6px; height: 6px; border-radius:50%; background: currentColor; box-shadow: 0 0 8px currentColor;
+  animation: pulse 2.4s ease-in-out infinite;}
+.card-stock.low{ color: var(--signal-amber);}
+.card-stock.out{ color: var(--ink-500);}
+@keyframes pulse { 50% { box-shadow: 0 0 0 6px rgba(126,231,135,0);}}
+
+/* skeleton */
+.skel{
+  background: linear-gradient(90deg, var(--ink-850) 0%, var(--ink-800) 50%, var(--ink-850) 100%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite;
+}
+@keyframes shimmer { from { background-position: -200% 0;} to { background-position: 200% 0;}}
+
+/* pagination */
+.pagination{
+  margin-top: 36px;
+  display:flex; align-items:center; justify-content: space-between; gap: 16px;
+}
+.pages{ display:flex; gap: 4px;}
+.page-btn{
+  width: 38px; height: 38px;
+  display:inline-flex; align-items:center; justify-content:center;
+  font-family: var(--mono); font-size: 12px;
+  border:1px solid var(--line); color: var(--ink-300);
+  border-radius: 2px; transition: all var(--t) var(--ease);
+}
+.page-btn:hover{ border-color: var(--line-strong); color: var(--ink-50);}
+.page-btn.on{ background: var(--cyan); color: var(--ink-1000); border-color: var(--cyan); font-weight: 700;}
+.page-info{ font-family: var(--mono); font-size: 11px; color: var(--ink-400); letter-spacing: .12em;}
+
+/* empty state */
+.empty{
+  padding: 80px 20px; text-align:center;
+  border: 1px dashed var(--line); border-radius: 2px;
+}
+.empty h3{ margin-bottom: 8px;}
+.empty p{ color: var(--ink-400); font-size: 14px;}
+
+/* ============================================================
+   PRODUCT PAGE
+   ============================================================ */
+.product-page{ display: none; padding-bottom: 80px;}
+.product-page.show{ display: block;}
+.catalog-page.hide{ display: none;}
+
+.prod-head{
+  padding: 40px 0 24px;
+  display:flex; align-items: center; justify-content: space-between;
+}
+.back-link{
+  font-family: var(--mono); font-size: 11px; letter-spacing: .18em; text-transform: uppercase;
+  color: var(--ink-300); display:inline-flex; gap: 10px; align-items: center;
+  transition: color var(--t) var(--ease);
+}
+.back-link:hover{ color: var(--cyan);}
+
+.prod-layout{
+  display:grid; grid-template-columns: 7fr 5fr; gap: 56px;
+  align-items: start;
+}
+@media (max-width: 1000px){ .prod-layout{ grid-template-columns: 1fr;} }
+
+/* gallery */
+.gallery{
+  position: sticky; top: 96px;
+  display: flex; flex-direction: column; gap: 14px;
+}
+.gallery-main{
+  border: 1px solid var(--line); border-radius: 3px;
+  background:
+    radial-gradient(500px 240px at 50% 90%, rgba(124,246,255,.1), transparent 70%),
+    linear-gradient(180deg, var(--ink-900), var(--ink-950));
+  height: 460px;
+  display:flex; align-items:center; justify-content:center;
+  overflow: hidden;
+  position: relative;
+}
+.gallery-main svg{ width: 70%; height: 75%;}
+.gallery-main::after{
+  content:""; position: absolute; left: 30px; top: 30px;
+  font-family: var(--mono); font-size: 10px; letter-spacing: .22em; color: var(--cyan);
+  content: "▲ FORGE / VIEW · 01";
+}
+.gallery-thumbs{ display:grid; grid-template-columns: repeat(5, 1fr); gap: 8px;}
+.thumb{
+  height: 76px;
+  border: 1px solid var(--line); border-radius: 2px;
+  background: var(--ink-900);
+  cursor: pointer; transition: all var(--t) var(--ease);
+  display:flex; align-items: center; justify-content: center;
+  overflow: hidden;
+}
+.thumb:hover{ border-color: var(--line-strong);}
+.thumb.on{ border-color: var(--cyan); box-shadow: 0 0 0 1px rgba(124,246,255,.25);}
+.thumb svg{ width: 70%; height: 70%; opacity: .65;}
+
+/* info column */
+.prod-info h1{ font-size: 56px; line-height: 1; margin-top: 14px;}
+.prod-brand{
+  font-family: var(--mono); font-size: 11px; letter-spacing: .22em; text-transform: uppercase;
+  color: var(--cyan);
+}
+.prod-strap{
+  margin-top: 22px; color: var(--ink-300); font-size: 15px; line-height: 1.65; max-width: 540px;
+}
+
+.prod-price-row{
+  margin-top: 30px; display:flex; align-items: baseline; gap: 18px;
+}
+.prod-price{ font-family: var(--display); font-size: 48px; line-height: 1;}
+.prod-instal{ font-family: var(--mono); font-size: 12px; color: var(--ink-400); letter-spacing: .04em;}
+
+.prod-cta-row{ margin-top: 28px; display:flex; gap: 12px; flex-wrap: wrap;}
+
+.prod-meta{
+  margin-top: 36px; display:grid; grid-template-columns: repeat(3, 1fr); gap: 1px;
+  background: var(--line); border: 1px solid var(--line);
+}
+.prod-meta .it{ background: var(--ink-900); padding: 14px 16px;}
+.prod-meta .k{ font-family: var(--mono); font-size: 9px; letter-spacing: .22em; text-transform: uppercase; color: var(--ink-400);}
+.prod-meta .v{ font-family: var(--display); font-size: 22px; margin-top: 4px;}
+.prod-meta .v small{ font-family: var(--mono); font-size: 11px; color: var(--ink-400); letter-spacing: .14em;}
+
+/* spec / bench tabs */
+.tab-row{
+  margin-top: 60px; display:flex; gap: 0;
+  border-bottom: 1px solid var(--line);
+}
+.tab-row button{
+  font-family: var(--mono); font-size: 11px; letter-spacing: .18em; text-transform: uppercase;
+  padding: 14px 22px; color: var(--ink-400);
+  margin-bottom: -1px; border-bottom: 1px solid transparent;
+  transition: all var(--t) var(--ease);
+}
+.tab-row button:hover{ color: var(--ink-50);}
+.tab-row button.on{ color: var(--ink-50); border-bottom-color: var(--cyan);}
+
+.tab-body{ padding: 36px 0;}
+.tab-body section{ display:none;}
+.tab-body section.show{ display: block;}
+
+/* specs table */
+.spec-table{
+  display:grid; grid-template-columns: 1fr 2fr;
+  border: 1px solid var(--line); border-radius: 3px; overflow: hidden;
+}
+.spec-table .row{
+  display: contents;
+}
+.spec-table .row > div{
+  padding: 14px 22px;
+  border-top: 1px solid var(--line);
+  background: var(--ink-900);
+}
+.spec-table .row:first-child > div{ border-top: 0;}
+.spec-table .row > div:first-child{
+  font-family: var(--mono); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-400);
+}
+.spec-table .row > div:last-child{ font-size: 14px;}
+
+/* benchmarks */
+.bench-list{ display:flex; flex-direction:column; gap: 18px;}
+.bench-row{
+  display:grid; grid-template-columns: 180px 1fr 80px; gap: 18px; align-items: center;
+}
+.bench-row .nm{ font-family: var(--mono); font-size: 12px; color: var(--ink-300); letter-spacing: .04em;}
+.bench-bar{ height: 16px; background: var(--ink-800); border-radius: 2px; overflow: hidden; position: relative;}
+.bench-bar i{
+  display:block; height: 100%;
+  background: linear-gradient(90deg, var(--cyan-deep), var(--cyan));
+  box-shadow: 0 0 12px rgba(124,246,255,.45);
+  transition: width 700ms var(--ease);
+  width: 0;
+}
+.bench-row .val{ font-family: var(--display); font-size: 22px; text-align: right;}
+.bench-row .val small{ font-family: var(--mono); font-size: 11px; color: var(--ink-400); letter-spacing: .14em; margin-left: 4px;}
+
+.bench-row.compare .nm{ color: var(--ink-500);}
+.bench-row.compare .bench-bar i{ background: var(--ink-600); box-shadow: none;}
+.bench-row.compare .val{ color: var(--ink-400); font-size: 17px;}
+
+/* fps table */
+.fps-table{
+  border:1px solid var(--line); border-radius: 3px; overflow: hidden;
+}
+.fps-table table{ width: 100%; border-collapse: collapse;}
+.fps-table th, .fps-table td{
+  padding: 14px 18px;
+  text-align: left;
+  border-bottom: 1px solid var(--line);
+  font-size: 13px;
+}
+.fps-table thead th{
+  font-family: var(--mono); font-size: 10px; letter-spacing: .22em; text-transform: uppercase;
+  color: var(--ink-400); background: var(--ink-850);
+}
+.fps-table td.num{ font-family: var(--display); font-size: 22px;}
+.fps-table tbody tr:hover{ background: rgba(124,246,255,.03);}
+.fps-table .game{ font-weight: 500;}
+.fps-table .badge{
+  display: inline-block;
+  font-family: var(--mono); font-size: 9px; letter-spacing: .2em; text-transform: uppercase;
+  padding: 3px 7px; border-radius: 2px;
+  border: 1px solid var(--line-strong); color: var(--ink-300);
+}
+
+/* reviews */
+.rev-list{ display:flex; flex-direction:column; gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 3px; overflow: hidden;}
+.rev-item{
+  background: var(--ink-900);
+  padding: 24px 26px;
+  display:grid; grid-template-columns: 48px 1fr auto; gap: 18px; align-items: start;
+}
+.rev-avatar{
+  width: 44px; height: 44px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--cyan-deep), var(--ink-700));
+  display:flex; align-items:center; justify-content:center;
+  font-family: var(--mono); font-size: 14px;
+  border: 1px solid var(--line-strong);
+}
+.rev-content{ min-width: 0;}
+.rev-content .head{ display:flex; align-items: baseline; gap: 12px; margin-bottom: 6px;}
+.rev-content .nm{ font-size: 14px; font-weight: 500;}
+.rev-content .meta{ font-family: var(--mono); font-size: 11px; color: var(--ink-400); letter-spacing: .04em;}
+.rev-content .quote{ color: var(--ink-200); font-size: 14px; line-height: 1.6; margin: 0;}
+.rev-stars{ display:flex; gap: 2px;}
+.rev-stars svg{ width: 14px; height: 14px; color: var(--cyan);}
+
+/* related */
+.related-section{ margin-top: 60px;}
+.related-grid{
+  display:grid; grid-template-columns: repeat(3, 1fr); gap: 1px;
+  background: var(--line); border: 1px solid var(--line);
+}
+@media (max-width: 800px){ .related-grid{ grid-template-columns: 1fr;}}
+
+/* footer */
+footer{ border-top: 1px solid var(--line); padding: 40px 0; background: var(--ink-1000);}
+.foot-row{ display:flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap;}
+.foot-row span{ font-family: var(--mono); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-500);}
+
+.reveal{ opacity: 0; transform: translateY(16px); transition: opacity 700ms var(--ease), transform 700ms var(--ease);}
+.reveal.in{ opacity: 1; transform: none;}
+
+/* mobile */
+@media (max-width: 760px){
+  .nav-links{ display:none;}
+  .cat-title-row{ grid-template-columns: 1fr;}
+  .results-head{ flex-wrap: wrap;}
+  .prod-info h1{ font-size: 40px;}
+  .prod-meta{ grid-template-columns: 1fr 1fr;}
+}
+
+@media (prefers-reduced-motion: reduce){
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important;}
+}
+</style>
+</head>
+<body>
+
+<div class="grid-bg" aria-hidden="true"></div>
+
+<!-- ============== NAV ============== -->
+<header class="nav">
+  <div class="nav-inner">
+    <a href="#" class="brand">
+      <span class="brand-mark"></span>
+      <span class="brand-text">FORGE<small>CATALOG · 2026</small></span>
+    </a>
+    <nav class="nav-links" aria-label="Primary">
+      <a href="#">Configurator</a>
+      <a href="#" class="active">Catalog</a>
+      <a href="#">Workshop</a>
+      <a href="#">Support</a>
+    </nav>
+    <div style="display:flex; gap:10px;">
+      <button class="btn">Sign in</button>
+      <button class="btn btn-primary">Cart <span class="arrow">→</span></button>
+    </div>
+  </div>
+</header>
+
+<!-- ============================================================
+     CATALOG PAGE
+     ============================================================ -->
+<div class="catalog-page" id="catalogPage">
+
+  <section class="cat-head">
+    <div class="container">
+      <div class="crumb"><span>FORGE</span><span class="sep">/</span><b>CATALOG</b><span class="sep">/</span><span id="crumbCat">All components</span></div>
+      <div class="cat-title-row reveal">
+        <div>
+          <span class="eyebrow">Components · 2026 lineup</span>
+          <h1 style="margin-top: 22px;">A library of <span class="italic">vetted parts.</span></h1>
+        </div>
+        <div class="cat-count">
+          <div class="n" id="totalN">—</div>
+          <div class="l">// items in catalog</div>
+        </div>
+      </div>
+
+      <div class="tabs" id="catTabs"></div>
+    </div>
+  </section>
+
+  <div class="container">
+    <div class="cat-layout">
+
+      <!-- ============== FILTERS ============== -->
+      <aside class="filters reveal" id="filters">
+        <div class="filter-title">Filters <button class="filter-reset" id="resetFilters">reset</button></div>
+
+        <div class="filter-group">
+          <div class="filter-title">Brand</div>
+          <div id="brandList"></div>
+        </div>
+
+        <div class="filter-group">
+          <div class="filter-title">Price</div>
+          <div class="price-range">
+            <input type="number" id="priceMin" placeholder="from" inputmode="numeric"/>
+            <span>—</span>
+            <input type="number" id="priceMax" placeholder="to" inputmode="numeric"/>
+          </div>
+        </div>
+
+        <div class="filter-group">
+          <div class="filter-title">In stock only</div>
+          <label class="f-check">
+            <input type="checkbox" id="stockOnly"/><span class="box"></span>
+            <span class="lab">Show only available</span>
+          </label>
+        </div>
+      </aside>
+
+      <!-- ============== RESULTS ============== -->
+      <div>
+        <div class="results-head reveal">
+          <div class="search">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+            <input type="text" id="searchInput" placeholder="Search components..."/>
+          </div>
+          <div class="sort-row">
+            <span class="lab">Sort</span>
+            <select class="select-mini" id="sortSel">
+              <option value="featured">Featured</option>
+              <option value="priceAsc">Price · low → high</option>
+              <option value="priceDesc">Price · high → low</option>
+              <option value="perfDesc">Performance</option>
+              <option value="newest">Newest first</option>
+            </select>
+            <div class="view-toggle">
+              <button class="on" title="Grid"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></button>
+              <button title="List"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="4" width="18" height="2"/><rect x="3" y="11" width="18" height="2"/><rect x="3" y="18" width="18" height="2"/></svg></button>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid reveal" id="grid"></div>
+
+        <div class="pagination" id="pagination"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     PRODUCT PAGE
+     ============================================================ -->
+<div class="product-page" id="productPage">
+  <div class="container">
+
+    <div class="prod-head">
+      <button class="back-link" id="backBtn">← Back to catalog</button>
+      <div class="crumb"><span>FORGE</span><span class="sep">/</span><span>CATALOG</span><span class="sep">/</span><b id="prodCrumb">Product</b></div>
+    </div>
+
+    <div class="prod-layout">
+
+      <!-- Gallery -->
+      <div class="gallery">
+        <div class="gallery-main" id="galleryMain">
+          <!-- product art -->
+        </div>
+        <div class="gallery-thumbs" id="galleryThumbs"></div>
+      </div>
+
+      <!-- Info -->
+      <div class="prod-info">
+        <div class="prod-brand" id="prodBrand">Brand</div>
+        <h1 id="prodName">Product name</h1>
+        <p class="prod-strap" id="prodStrap">Description</p>
+
+        <div class="prod-price-row">
+          <div class="prod-price">₽ <span id="prodPrice">0</span></div>
+          <div class="prod-instal" id="prodInstal">or 0 ₽ × 12 mo</div>
+        </div>
+
+        <div class="prod-cta-row">
+          <button class="btn btn-primary">Add to cart <span class="arrow">→</span></button>
+          <button class="btn">Add to build</button>
+          <button class="btn">Compare</button>
+        </div>
+
+        <div class="prod-meta" id="prodMeta"></div>
+
+        <!-- Tabs -->
+        <div class="tab-row" id="prodTabs">
+          <button class="on" data-tab="specs">Specifications</button>
+          <button data-tab="bench">Benchmarks</button>
+          <button data-tab="fps">FPS · 12 games</button>
+          <button data-tab="reviews">Reviews <span style="margin-left:6px; color: var(--ink-500);" id="revCount">0</span></button>
+        </div>
+
+        <div class="tab-body">
+          <section class="show" id="tab-specs">
+            <div class="spec-table" id="specTable"></div>
+          </section>
+          <section id="tab-bench">
+            <div class="bench-list" id="benchList"></div>
+          </section>
+          <section id="tab-fps">
+            <div class="fps-table">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Game</th>
+                    <th>1080p</th>
+                    <th>1440p</th>
+                    <th>2160p</th>
+                    <th>Preset</th>
+                  </tr>
+                </thead>
+                <tbody id="fpsBody"></tbody>
+              </table>
+            </div>
+          </section>
+          <section id="tab-reviews">
+            <div class="rev-list" id="revList"></div>
+          </section>
+        </div>
+      </div>
+    </div>
+
+    <!-- Related -->
+    <section class="related-section">
+      <div class="cat-title-row" style="grid-template-columns: 1fr auto; gap: 24px; align-items: baseline; margin-bottom: 20px;">
+        <h2>You might also <span class="italic">forge.</span></h2>
+        <a class="back-link" href="#">View more →</a>
+      </div>
+      <div class="related-grid" id="relatedGrid"></div>
+    </section>
+  </div>
+</div>
+
+<!-- ============== FOOTER ============== -->
+<footer>
+  <div class="container foot-row">
+    <span>© 2026 FORGE Systems · Components catalog</span>
+    <span>Moscow · 55°45′ N · 37°37′ E</span>
+  </div>
+</footer>
+
+<!-- ============================================================
+     DATA + LOGIC
+     ============================================================ -->
+<script>
+"use strict";
+
+/* art renderers per category (procedural SVGs) */
+const ART = {
+  cpu: () => `
+    <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="cpuG" x1="0" x2="1" y1="0" y2="1">
+          <stop offset="0" stop-color="#2A3038"/><stop offset="1" stop-color="#0E1116"/>
+        </linearGradient>
+      </defs>
+      <rect x="40" y="40" width="120" height="120" rx="6" fill="url(#cpuG)" stroke="#3a4250" stroke-width="1"/>
+      <rect x="58" y="58" width="84" height="84" rx="2" fill="#1a1f26" stroke="#3a4250"/>
+      <text x="100" y="106" text-anchor="middle" font-family="JetBrains Mono" font-size="12" fill="#7CF6FF" letter-spacing="2">FORGE</text>
+      <g stroke="#3a4250" stroke-width="1">
+        ${Array.from({length:14},(_,i)=>`<line x1="${48+i*8}" y1="32" x2="${48+i*8}" y2="40"/>`).join('')}
+        ${Array.from({length:14},(_,i)=>`<line x1="${48+i*8}" y1="160" x2="${48+i*8}" y2="168"/>`).join('')}
+        ${Array.from({length:14},(_,i)=>`<line x1="32" y1="${48+i*8}" x2="40" y2="${48+i*8}"/>`).join('')}
+        ${Array.from({length:14},(_,i)=>`<line x1="160" y1="${48+i*8}" x2="168" y2="${48+i*8}"/>`).join('')}
+      </g>
+      <circle cx="50" cy="50" r="3" fill="#FFB454"/>
+    </svg>`,
+  gpu: () => `
+    <svg viewBox="0 0 320 160" xmlns="http://www.w3.org/2000/svg">
+      <defs><linearGradient id="g1" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#2A3038"/><stop offset="1" stop-color="#0E1116"/></linearGradient></defs>
+      <rect x="10" y="20" width="300" height="120" rx="4" fill="url(#g1)" stroke="#3a4250"/>
+      <circle cx="80" cy="80" r="36" fill="#0a0c10" stroke="#3a4250"/>
+      <circle cx="160" cy="80" r="36" fill="#0a0c10" stroke="#3a4250"/>
+      <circle cx="240" cy="80" r="36" fill="#0a0c10" stroke="#3a4250"/>
+      <g stroke="#4a5260" stroke-width="2">
+        <line x1="80" y1="44" x2="80" y2="116"/><line x1="44" y1="80" x2="116" y2="80"/>
+        <line x1="160" y1="44" x2="160" y2="116"/><line x1="124" y1="80" x2="196" y2="80"/>
+        <line x1="240" y1="44" x2="240" y2="116"/><line x1="204" y1="80" x2="276" y2="80"/>
+      </g>
+      <rect x="20" y="124" width="280" height="6" fill="#7CF6FF" opacity=".8"/>
+      <text x="160" y="34" text-anchor="middle" font-family="JetBrains Mono" font-size="8" fill="#5A626D" letter-spacing="3">FORGE / RTX</text>
+    </svg>`,
+  ram: () => `
+    <svg viewBox="0 0 280 160" xmlns="http://www.w3.org/2000/svg">
+      ${Array.from({length:2},(_,i)=>`
+        <g transform="translate(${20+i*140},20)">
+          <rect x="0" y="0" width="120" height="100" rx="3" fill="#1a1f26" stroke="#3a4250"/>
+          <rect x="6" y="0" width="108" height="14" fill="#7CF6FF" opacity=".85"/>
+          <rect x="6" y="20" width="108" height="60" fill="#0a0c10" stroke="#2A3038"/>
+          <text x="60" y="56" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="#7CF6FF" letter-spacing="2">FORGE</text>
+          ${Array.from({length:10},(_,j)=>`<rect x="${10+j*11}" y="86" width="8" height="14" fill="#2A3038"/>`).join('')}
+        </g>`).join('')}
+    </svg>`,
+  mb: () => `
+    <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+      <rect x="20" y="20" width="160" height="160" rx="3" fill="#0a0c10" stroke="#3a4250"/>
+      <rect x="40" y="40" width="50" height="50" rx="3" fill="#1a1f26" stroke="#3a4250"/>
+      <text x="65" y="70" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#7CF6FF" letter-spacing="2">CPU</text>
+      <g>
+        ${Array.from({length:4},(_,i)=>`<rect x="${110+i*15}" y="40" width="8" height="80" fill="#1a1f26" stroke="#2A3038"/>`).join('')}
+      </g>
+      <rect x="40" y="120" width="100" height="40" fill="#1a1f26" stroke="#2A3038"/>
+      <text x="90" y="146" text-anchor="middle" font-family="JetBrains Mono" font-size="8" fill="#5A626D" letter-spacing="2">PCIE 5.0 ×16</text>
+      <circle cx="170" cy="170" r="6" fill="#7CF6FF"/>
+    </svg>`,
+  storage: () => `
+    <svg viewBox="0 0 240 120" xmlns="http://www.w3.org/2000/svg">
+      <rect x="20" y="30" width="200" height="60" rx="3" fill="#1a1f26" stroke="#3a4250"/>
+      <rect x="30" y="40" width="40" height="40" fill="#0a0c10" stroke="#3a4250"/>
+      <rect x="76" y="40" width="40" height="40" fill="#0a0c10" stroke="#3a4250"/>
+      <rect x="122" y="40" width="40" height="40" fill="#0a0c10" stroke="#3a4250"/>
+      <rect x="168" y="40" width="40" height="40" fill="#0a0c10" stroke="#3a4250"/>
+      <text x="120" y="105" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#5A626D" letter-spacing="3">FORGE / NVMe Gen5</text>
+      <circle cx="210" cy="40" r="3" fill="#7EE787"/>
+    </svg>`,
+  psu: () => `
+    <svg viewBox="0 0 220 140" xmlns="http://www.w3.org/2000/svg">
+      <rect x="20" y="20" width="180" height="100" rx="3" fill="#1a1f26" stroke="#3a4250"/>
+      <circle cx="110" cy="70" r="36" fill="#0a0c10" stroke="#3a4250"/>
+      <g stroke="#4a5260" stroke-width="2">
+        <line x1="110" y1="34" x2="110" y2="106"/>
+        <line x1="74" y1="70" x2="146" y2="70"/>
+        <line x1="84" y1="44" x2="136" y2="96"/>
+        <line x1="136" y1="44" x2="84" y2="96"/>
+      </g>
+      <text x="180" y="36" text-anchor="end" font-family="JetBrains Mono" font-size="8" fill="#5A626D" letter-spacing="3">850W · 80+ GOLD</text>
+    </svg>`,
+  cooler: () => `
+    <svg viewBox="0 0 280 140" xmlns="http://www.w3.org/2000/svg">
+      <rect x="20" y="40" width="240" height="60" rx="3" fill="#1a1f26" stroke="#3a4250"/>
+      <g>
+        ${Array.from({length:3},(_,i)=>`<circle cx="${60+i*80}" cy="70" r="22" fill="#0a0c10" stroke="#3a4250"/>`).join('')}
+        ${Array.from({length:3},(_,i)=>`<line x1="${60+i*80-22}" y1="70" x2="${60+i*80+22}" y2="70" stroke="#4a5260" stroke-width="2"/>`).join('')}
+        ${Array.from({length:3},(_,i)=>`<line x1="${60+i*80}" y1="48" x2="${60+i*80}" y2="92" stroke="#4a5260" stroke-width="2"/>`).join('')}
+      </g>
+      <text x="140" y="32" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#7CF6FF" letter-spacing="3">FORGE / 360 AIO</text>
+    </svg>`,
+  case: () => `
+    <svg viewBox="0 0 160 200" xmlns="http://www.w3.org/2000/svg">
+      <rect x="30" y="20" width="100" height="160" rx="3" fill="#0a0c10" stroke="#3a4250"/>
+      <rect x="40" y="32" width="80" height="136" fill="#1a1f26" stroke="#2A3038"/>
+      <rect x="44" y="36" width="72" height="3" fill="#7CF6FF" opacity=".8"/>
+      <rect x="44" y="161" width="72" height="3" fill="#7CF6FF" opacity=".6"/>
+      <text x="80" y="106" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#5A626D" letter-spacing="3">FORGE / ATX</text>
+    </svg>`,
+};
+
+/* ========================================================
+   PRODUCTS DATA
+   ======================================================== */
+const PRODUCTS = [
+  // CPUs
+  { id:"cpu-7600",    cat:"cpu", brand:"AMD",    name:"Ryzen 5 7600", price:23900, perf:78, stock:"in", new:false,  rating:4.6, reviews:128, sub:"6 cores · AM5 · 65 W",
+    specs:[["Cores","6"],["Threads","12"],["Base","3.8 GHz"],["Boost","5.1 GHz"],["Cache","32 MB L3"],["TDP","65 W"],["Socket","AM5"],["iGPU","Yes"]],
+    bench:[["Cinebench R23 (multi)", 14500, 22000],["Cinebench R23 (single)", 1820, 2200],["Geekbench 6 (single)", 2680, 3150],["Blender BMW (s)", 92, 60]] },
+
+  { id:"cpu-7700x",   cat:"cpu", brand:"AMD",    name:"Ryzen 7 7700X", price:32900, perf:90, stock:"in", new:false, rating:4.7, reviews:212, sub:"8 cores · AM5 · 105 W",
+    specs:[["Cores","8"],["Threads","16"],["Base","4.5 GHz"],["Boost","5.4 GHz"],["Cache","32 MB L3"],["TDP","105 W"],["Socket","AM5"],["iGPU","Yes"]],
+    bench:[["Cinebench R23 (multi)", 19500, 22000],["Cinebench R23 (single)", 2050, 2200],["Geekbench 6 (single)", 2890, 3150],["Blender BMW (s)", 68, 60]] },
+
+  { id:"cpu-7800x3d", cat:"cpu", brand:"AMD",    name:"Ryzen 7 7800X3D", price:46900, perf:104, stock:"in", new:true, rating:4.9, reviews:489, sub:"8 cores · AM5 · 96 MB 3D V-Cache",
+    specs:[["Cores","8"],["Threads","16"],["Base","4.2 GHz"],["Boost","5.0 GHz"],["Cache","96 MB L3"],["TDP","120 W"],["Socket","AM5"],["iGPU","Yes"]],
+    bench:[["Cinebench R23 (multi)", 17800, 22000],["Cinebench R23 (single)", 1860, 2200],["Geekbench 6 (single)", 2950, 3150],["Blender BMW (s)", 73, 60]] },
+
+  { id:"cpu-7950x3d", cat:"cpu", brand:"AMD",    name:"Ryzen 9 7950X3D", price:69900, perf:118, stock:"low", new:false, rating:4.8, reviews:201, sub:"16 cores · AM5 · 128 MB cache",
+    specs:[["Cores","16"],["Threads","32"],["Base","4.2 GHz"],["Boost","5.7 GHz"],["Cache","128 MB L3"],["TDP","120 W"],["Socket","AM5"],["iGPU","Yes"]],
+    bench:[["Cinebench R23 (multi)", 38100, 42000],["Cinebench R23 (single)", 2050, 2200],["Geekbench 6 (single)", 3010, 3150],["Blender BMW (s)", 36, 60]] },
+
+  { id:"cpu-13600k", cat:"cpu", brand:"Intel", name:"Core i5-13600K", price:28900, perf:88, stock:"in", new:false, rating:4.6, reviews:312, sub:"14 cores · LGA1700 · 125 W",
+    specs:[["Cores","14 (6P+8E)"],["Threads","20"],["Base P","3.5 GHz"],["Boost P","5.1 GHz"],["Cache","24 MB L3"],["TDP","125/181 W"],["Socket","LGA1700"]],
+    bench:[["Cinebench R23 (multi)", 24200, 42000],["Cinebench R23 (single)", 2010, 2200],["Geekbench 6 (single)", 2890, 3150]] },
+
+  { id:"cpu-14700k", cat:"cpu", brand:"Intel", name:"Core i7-14700K", price:41900, perf:108, stock:"in", new:true, rating:4.7, reviews:188, sub:"20 cores · LGA1700 · 125 W",
+    specs:[["Cores","20 (8P+12E)"],["Threads","28"],["Base P","3.4 GHz"],["Boost P","5.6 GHz"],["Cache","33 MB L3"],["TDP","125/253 W"],["Socket","LGA1700"]],
+    bench:[["Cinebench R23 (multi)", 35800, 42000],["Cinebench R23 (single)", 2160, 2200],["Geekbench 6 (single)", 3050, 3150]] },
+
+  { id:"cpu-14900k", cat:"cpu", brand:"Intel", name:"Core i9-14900K", price:64900, perf:120, stock:"in", new:true, rating:4.8, reviews:147, sub:"24 cores · LGA1700 · 125 W",
+    specs:[["Cores","24 (8P+16E)"],["Threads","32"],["Base P","3.2 GHz"],["Boost P","6.0 GHz"],["Cache","36 MB L3"],["TDP","125/253 W"],["Socket","LGA1700"]],
+    bench:[["Cinebench R23 (multi)", 42000, 42000],["Cinebench R23 (single)", 2200, 2200],["Geekbench 6 (single)", 3150, 3150]] },
+
+  // GPUs
+  { id:"gpu-4060",    cat:"gpu", brand:"NVIDIA", name:"GeForce RTX 4060 8GB", price:34900, perf:62, stock:"in", new:false, rating:4.4, reviews:402, sub:"AD107 · 8 GB GDDR6 · 115 W",
+    specs:[["GPU","AD107"],["CUDA","3072"],["VRAM","8 GB GDDR6"],["Bus","128-bit"],["Bandwidth","272 GB/s"],["Power","115 W"],["Length","245 mm"]],
+    bench:[["3DMark Time Spy", 11200, 33000],["3DMark Port Royal", 6800, 22000],["Blender BMW (s)", 18, 6]] },
+
+  { id:"gpu-4060ti",  cat:"gpu", brand:"NVIDIA", name:"GeForce RTX 4060 Ti 16GB", price:48900, perf:78, stock:"in", new:false, rating:4.5, reviews:268, sub:"AD106 · 16 GB · 165 W",
+    specs:[["GPU","AD106"],["CUDA","4352"],["VRAM","16 GB GDDR6"],["Bus","128-bit"],["Bandwidth","288 GB/s"],["Power","165 W"],["Length","267 mm"]],
+    bench:[["3DMark Time Spy", 13800, 33000],["3DMark Port Royal", 8600, 22000],["Blender BMW (s)", 14, 6]] },
+
+  { id:"gpu-4070",    cat:"gpu", brand:"NVIDIA", name:"GeForce RTX 4070 12GB", price:59900, perf:96, stock:"in", new:false, rating:4.7, reviews:380, sub:"AD104 · 12 GB · 200 W",
+    specs:[["GPU","AD104"],["CUDA","5888"],["VRAM","12 GB GDDR6X"],["Bus","192-bit"],["Bandwidth","504 GB/s"],["Power","200 W"],["Length","285 mm"]],
+    bench:[["3DMark Time Spy", 17600, 33000],["3DMark Port Royal", 11400, 22000],["Blender BMW (s)", 10, 6]] },
+
+  { id:"gpu-4070tisup", cat:"gpu", brand:"NVIDIA", name:"GeForce RTX 4070 Ti Super 16GB", price:84900, perf:118, stock:"in", new:true, rating:4.8, reviews:289, sub:"AD103 · 16 GB · 285 W",
+    specs:[["GPU","AD103"],["CUDA","8448"],["VRAM","16 GB GDDR6X"],["Bus","256-bit"],["Bandwidth","672 GB/s"],["Power","285 W"],["Length","304 mm"]],
+    bench:[["3DMark Time Spy", 23200, 33000],["3DMark Port Royal", 15600, 22000],["Blender BMW (s)", 8, 6]] },
+
+  { id:"gpu-4080sup", cat:"gpu", brand:"NVIDIA", name:"GeForce RTX 4080 Super 16GB", price:114900, perf:132, stock:"low", new:true, rating:4.8, reviews:178, sub:"AD103 · 16 GB · 320 W",
+    specs:[["GPU","AD103"],["CUDA","10240"],["VRAM","16 GB GDDR6X"],["Bus","256-bit"],["Bandwidth","736 GB/s"],["Power","320 W"],["Length","336 mm"]],
+    bench:[["3DMark Time Spy", 27800, 33000],["3DMark Port Royal", 18800, 22000],["Blender BMW (s)", 7, 6]] },
+
+  { id:"gpu-4090",    cat:"gpu", brand:"NVIDIA", name:"GeForce RTX 4090 24GB", price:189000, perf:168, stock:"low", new:false, rating:4.9, reviews:298, sub:"AD102 · 24 GB · 450 W",
+    specs:[["GPU","AD102"],["CUDA","16384"],["VRAM","24 GB GDDR6X"],["Bus","384-bit"],["Bandwidth","1008 GB/s"],["Power","450 W"],["Length","357 mm"]],
+    bench:[["3DMark Time Spy", 33000, 33000],["3DMark Port Royal", 22000, 22000],["Blender BMW (s)", 6, 6]] },
+
+  { id:"gpu-7800xt",  cat:"gpu", brand:"AMD",    name:"Radeon RX 7800 XT 16GB", price:54900, perf:94, stock:"in", new:false, rating:4.5, reviews:201, sub:"Navi 32 · 16 GB · 263 W",
+    specs:[["GPU","Navi 32"],["Stream","3840"],["VRAM","16 GB GDDR6"],["Bus","256-bit"],["Bandwidth","624 GB/s"],["Power","263 W"],["Length","310 mm"]],
+    bench:[["3DMark Time Spy", 18200, 33000],["3DMark Port Royal", 9800, 22000],["Blender BMW (s)", 14, 6]] },
+
+  { id:"gpu-7900xtx", cat:"gpu", brand:"AMD",    name:"Radeon RX 7900 XTX 24GB", price:104900, perf:138, stock:"in", new:false, rating:4.7, reviews:189, sub:"Navi 31 · 24 GB · 355 W",
+    specs:[["GPU","Navi 31"],["Stream","6144"],["VRAM","24 GB GDDR6"],["Bus","384-bit"],["Bandwidth","960 GB/s"],["Power","355 W"],["Length","330 mm"]],
+    bench:[["3DMark Time Spy", 28400, 33000],["3DMark Port Royal", 16200, 22000],["Blender BMW (s)", 11, 6]] },
+
+  // Motherboards
+  { id:"mb-b650",  cat:"mb", brand:"ASUS",     name:"TUF Gaming B650-PLUS WIFI", price:18900, perf:75, stock:"in", new:false, rating:4.6, reviews:312, sub:"AM5 · DDR5 · ATX",
+    specs:[["Chipset","B650"],["Socket","AM5"],["Memory","DDR5-6400"],["Form","ATX"],["PCIe","Gen5 ×16"],["M.2","×2"],["WiFi","WiFi 6"],["LAN","2.5 G"]],
+    bench:[["VRM thermals (°C)", 78, 60],["DDR5 OC (MT/s)", 6400, 8200]] },
+
+  { id:"mb-x670e", cat:"mb", brand:"Gigabyte", name:"X670E AORUS Elite", price:32900, perf:90, stock:"in", new:false, rating:4.7, reviews:198, sub:"AM5 · DDR5 7200 · ATX",
+    specs:[["Chipset","X670E"],["Socket","AM5"],["Memory","DDR5-7200"],["Form","ATX"],["PCIe","Gen5 ×16 + Gen5 M.2"],["M.2","×4"],["WiFi","WiFi 6E"],["LAN","2.5 G"]],
+    bench:[["VRM thermals (°C)", 65, 60],["DDR5 OC (MT/s)", 7200, 8200]] },
+
+  { id:"mb-z790",  cat:"mb", brand:"MSI",      name:"MAG Z790 Tomahawk WIFI", price:28900, perf:88, stock:"in", new:false, rating:4.6, reviews:240, sub:"LGA1700 · DDR5 · ATX",
+    specs:[["Chipset","Z790"],["Socket","LGA1700"],["Memory","DDR5-7800"],["Form","ATX"],["PCIe","Gen5 ×16"],["M.2","×5"],["WiFi","WiFi 6E"]],
+    bench:[["VRM thermals (°C)", 68, 60],["DDR5 OC (MT/s)", 7800, 8200]] },
+
+  { id:"mb-z790hr",cat:"mb", brand:"ASUS",     name:"ROG Maximus Z790 Hero", price:62900, perf:100, stock:"low", new:true, rating:4.9, reviews:119, sub:"LGA1700 · DDR5 8000 · E-ATX",
+    specs:[["Chipset","Z790"],["Socket","LGA1700"],["Memory","DDR5-8000"],["Form","ATX"],["PCIe","Gen5 ×16 + Gen5 M.2"],["M.2","×5"],["WiFi","WiFi 7"],["LAN","2.5 G"]],
+    bench:[["VRM thermals (°C)", 58, 60],["DDR5 OC (MT/s)", 8000, 8200]] },
+
+  // RAM
+  { id:"ram-32-6000", cat:"ram", brand:"Kingston", name:"Fury Beast 32GB DDR5-6000 CL30", price:11900, perf:74, stock:"in", new:false, rating:4.7, reviews:521, sub:"2×16 GB · DDR5-6000",
+    specs:[["Capacity","32 GB (2×16)"],["Speed","6000 MT/s"],["CAS","CL30"],["Voltage","1.4 V"],["XMP","Yes"],["EXPO","Yes"],["RGB","No"]],
+    bench:[["AIDA64 read (MB/s)", 78000, 110000],["Latency (ns)", 68, 50]] },
+
+  { id:"ram-32-6400", cat:"ram", brand:"G.Skill", name:"Trident Z5 32GB DDR5-6400 CL30", price:14900, perf:82, stock:"in", new:false, rating:4.8, reviews:312, sub:"2×16 GB · DDR5-6400",
+    specs:[["Capacity","32 GB (2×16)"],["Speed","6400 MT/s"],["CAS","CL30"],["Voltage","1.4 V"],["RGB","ARGB"]],
+    bench:[["AIDA64 read (MB/s)", 84000, 110000],["Latency (ns)", 64, 50]] },
+
+  { id:"ram-64-6400", cat:"ram", brand:"G.Skill", name:"Trident Z5 64GB DDR5-6400 CL32", price:27900, perf:88, stock:"in", new:true, rating:4.7, reviews:120, sub:"2×32 GB · DDR5-6400",
+    specs:[["Capacity","64 GB (2×32)"],["Speed","6400 MT/s"],["CAS","CL32"],["Voltage","1.4 V"],["RGB","ARGB"]],
+    bench:[["AIDA64 read (MB/s)", 84500, 110000],["Latency (ns)", 66, 50]] },
+
+  { id:"ram-64-7200", cat:"ram", brand:"Corsair", name:"Dominator Titanium 64GB DDR5-7200", price:39900, perf:95, stock:"low", new:true, rating:4.8, reviews:84, sub:"2×32 GB · DDR5-7200",
+    specs:[["Capacity","64 GB (2×32)"],["Speed","7200 MT/s"],["CAS","CL34"],["Voltage","1.4 V"],["RGB","Capellix"]],
+    bench:[["AIDA64 read (MB/s)", 96000, 110000],["Latency (ns)", 58, 50]] },
+
+  // Storage
+  { id:"ssd-1t-g4", cat:"storage", brand:"Samsung", name:"990 PRO 1TB Gen4", price:9900, perf:88, stock:"in", new:false, rating:4.8, reviews:1042, sub:"PCIe 4.0 · 7450 MB/s",
+    specs:[["Capacity","1 TB"],["Interface","PCIe 4.0 ×4"],["Form","M.2 2280"],["Read","7450 MB/s"],["Write","6900 MB/s"],["TBW","600 TB"]],
+    bench:[["Seq. read (MB/s)", 7450, 14500],["Seq. write (MB/s)", 6900, 12500]] },
+
+  { id:"ssd-2t-g4", cat:"storage", brand:"Samsung", name:"990 PRO 2TB Gen4", price:18900, perf:90, stock:"in", new:false, rating:4.9, reviews:712, sub:"PCIe 4.0 · 2 TB",
+    specs:[["Capacity","2 TB"],["Interface","PCIe 4.0 ×4"],["Form","M.2 2280"],["Read","7450 MB/s"],["Write","6900 MB/s"],["TBW","1200 TB"]],
+    bench:[["Seq. read (MB/s)", 7450, 14500],["Seq. write (MB/s)", 6900, 12500]] },
+
+  { id:"ssd-2t-g5", cat:"storage", brand:"Crucial", name:"T705 2TB Gen5", price:26900, perf:100, stock:"in", new:true, rating:4.7, reviews:198, sub:"PCIe 5.0 · 14 GB/s",
+    specs:[["Capacity","2 TB"],["Interface","PCIe 5.0 ×4"],["Form","M.2 2280"],["Read","14500 MB/s"],["Write","12500 MB/s"],["TBW","1200 TB"]],
+    bench:[["Seq. read (MB/s)", 14500, 14500],["Seq. write (MB/s)", 12500, 12500]] },
+
+  // PSU
+  { id:"psu-750", cat:"psu", brand:"Corsair", name:"RM750x 80+ Gold", price:11900, perf:72, stock:"in", new:false, rating:4.7, reviews:480, sub:"750 W · Gold · Modular",
+    specs:[["Wattage","750 W"],["Cert","80+ Gold"],["Cabling","Fully modular"],["Fan","Magnetic levitation"],["Warranty","10 years"]],
+    bench:[["Efficiency 50% load (%)", 92, 94],["Ripple (mV)", 18, 10]] },
+
+  { id:"psu-850", cat:"psu", brand:"Seasonic", name:"FOCUS GX 850 Gold", price:14900, perf:78, stock:"in", new:false, rating:4.8, reviews:312, sub:"850 W · Gold · Hybrid",
+    specs:[["Wattage","850 W"],["Cert","80+ Gold"],["Cabling","Fully modular"],["Fan","FDB · Hybrid mode"],["Warranty","10 years"]],
+    bench:[["Efficiency 50% load (%)", 92, 94],["Ripple (mV)", 16, 10]] },
+
+  { id:"psu-1000", cat:"psu", brand:"Corsair", name:"HX1000 80+ Platinum", price:21900, perf:88, stock:"in", new:false, rating:4.8, reviews:198, sub:"1000 W · Platinum",
+    specs:[["Wattage","1000 W"],["Cert","80+ Platinum"],["Cabling","Fully modular"],["Fan","FDB"],["Warranty","12 years"]],
+    bench:[["Efficiency 50% load (%)", 94, 94],["Ripple (mV)", 12, 10]] },
+
+  // Cases
+  { id:"case-h7", cat:"case", brand:"NZXT", name:"H7 Flow (ATX)", price:14900, perf:70, stock:"in", new:false, rating:4.6, reviews:412, sub:"ATX · Mesh · 400 mm GPU",
+    specs:[["Form","ATX"],["GPU max","400 mm"],["Radiator max","360 mm"],["Front","Mesh"],["Side","Tempered glass"]],
+    bench:[["Cooling (°C delta)", 18, 12]] },
+
+  { id:"case-evolv", cat:"case", brand:"Phanteks", name:"Evolv X II (ATX)", price:24900, perf:85, stock:"low", new:true, rating:4.7, reviews:140, sub:"ATX · 445 mm GPU · Dual-system ready",
+    specs:[["Form","ATX (Dual)"],["GPU max","445 mm"],["Radiator max","420 mm"],["Front","Aluminum"],["Side","Tempered glass"]],
+    bench:[["Cooling (°C delta)", 12, 12]] },
+
+  { id:"case-o11", cat:"case", brand:"Lian Li", name:"O11 Dynamic EVO (ATX)", price:19900, perf:80, stock:"in", new:false, rating:4.8, reviews:602, sub:"ATX · 422 mm GPU · Reversible",
+    specs:[["Form","ATX"],["GPU max","422 mm"],["Radiator max","360 mm"],["Front","Closed/Mesh"],["Side","Dual tempered glass"]],
+    bench:[["Cooling (°C delta)", 14, 12]] },
+];
+
+const CATEGORIES = [
+  { id:"all",     label:"All components" },
+  { id:"cpu",     label:"Processors" },
+  { id:"gpu",     label:"Graphics" },
+  { id:"mb",      label:"Motherboards" },
+  { id:"ram",     label:"Memory" },
+  { id:"storage", label:"Storage" },
+  { id:"psu",     label:"Power" },
+  { id:"case",    label:"Chassis" },
+];
+
+const FPS_GAMES_TABLE = [
+  ["Cyberpunk 2077", "RT Ultra", 1.0],
+  ["Alan Wake II",   "PT High",  0.85],
+  ["MSFS 2024",      "Ultra",    1.2],
+  ["Baldur's Gate 3","Ultra",    1.6],
+  ["The Witcher 3",  "Ultra+",   2.1],
+  ["Hogwarts Legacy","Ultra",    1.7],
+  ["Forza Motorsport","Extreme", 1.8],
+  ["Counter-Strike 2","Max",     5.2],
+  ["Valorant",       "Compet",   6.6],
+  ["Fortnite",       "Epic",     2.3],
+  ["Apex Legends",   "Max",      3.0],
+  ["Red Dead 2",     "Ultra",    1.4],
+];
+
+/* state */
+const state = {
+  view: "catalog",   // catalog | product
+  category: "all",
+  brands: new Set(),
+  priceMin: null, priceMax: null,
+  stockOnly: false,
+  sort: "featured",
+  query: "",
+  page: 1,
+  perPage: 9,
+  productId: null,
+};
+
+const $ = (s, r=document) => r.querySelector(s);
+const $$ = (s, r=document) => Array.from(r.querySelectorAll(s));
+const ru = n => n.toLocaleString("ru-RU");
+const findProduct = id => PRODUCTS.find(p => p.id === id);
+
+/* ========== TABS RENDER ========== */
+function renderTabs(){
+  const counts = CATEGORIES.map(c => ({...c, n: c.id==="all" ? PRODUCTS.length : PRODUCTS.filter(p=>p.cat===c.id).length}));
+  $("#catTabs").innerHTML = counts.map(c =>
+    `<button class="tab ${c.id===state.category?'active':''}" data-cat="${c.id}">${c.label}<span class="ct">/ ${String(c.n).padStart(2,'0')}</span></button>`
+  ).join('');
+  $$("#catTabs .tab").forEach(b => b.addEventListener('click', () => {
+    state.category = b.dataset.cat;
+    state.page = 1; state.brands.clear();
+    renderAll();
+  }));
+}
+
+/* ========== FILTERS RENDER ========== */
+function renderBrandFilter(){
+  // brands available in current category
+  const visible = (state.category === 'all') ? PRODUCTS : PRODUCTS.filter(p => p.cat===state.category);
+  const brandCounts = {};
+  visible.forEach(p => { brandCounts[p.brand] = (brandCounts[p.brand]||0) + 1; });
+  const brands = Object.keys(brandCounts).sort();
+
+  $("#brandList").innerHTML = brands.map(b => `
+    <label class="f-check">
+      <input type="checkbox" data-brand="${b}" ${state.brands.has(b)?'checked':''}/>
+      <span class="box"></span>
+      <span class="lab">${b}</span>
+      <span class="ct">/ ${brandCounts[b]}</span>
+    </label>
+  `).join('');
+
+  $$("#brandList input").forEach(inp => inp.addEventListener('change', () => {
+    const b = inp.dataset.brand;
+    if (inp.checked) state.brands.add(b); else state.brands.delete(b);
+    state.page = 1;
+    renderResults();
+  }));
+}
+
+/* ========== APPLY FILTERS / SORT ========== */
+function applyFilters(){
+  let list = PRODUCTS.slice();
+  if (state.category !== 'all') list = list.filter(p => p.cat === state.category);
+  if (state.brands.size) list = list.filter(p => state.brands.has(p.brand));
+  if (state.priceMin != null) list = list.filter(p => p.price >= state.priceMin);
+  if (state.priceMax != null) list = list.filter(p => p.price <= state.priceMax);
+  if (state.stockOnly) list = list.filter(p => p.stock === 'in');
+  if (state.query){
+    const q = state.query.toLowerCase();
+    list = list.filter(p => (p.name + ' ' + p.brand + ' ' + p.sub).toLowerCase().includes(q));
+  }
+  switch (state.sort){
+    case 'priceAsc':  list.sort((a,b)=>a.price-b.price); break;
+    case 'priceDesc': list.sort((a,b)=>b.price-a.price); break;
+    case 'perfDesc':  list.sort((a,b)=>b.perf-a.perf); break;
+    case 'newest':    list.sort((a,b)=> (b.new?1:0) - (a.new?1:0)); break;
+    default: /* featured: keep order but new first */ list.sort((a,b)=> (b.new?1:0) - (a.new?1:0));
+  }
+  return list;
+}
+
+/* ========== RESULTS RENDER ========== */
+function renderResults(){
+  const list = applyFilters();
+  $("#totalN").textContent = list.length;
+  $("#crumbCat").textContent = CATEGORIES.find(c=>c.id===state.category).label;
+
+  const start = (state.page-1)*state.perPage;
+  const pageList = list.slice(start, start + state.perPage);
+
+  const grid = $("#grid");
+  if (pageList.length === 0){
+    grid.innerHTML = `
+      <div class="empty" style="grid-column: 1 / -1;">
+        <h3>Nothing matches</h3>
+        <p>Try removing a filter, broadening the price range, or clearing the search.</p>
+      </div>`;
+  } else {
+    grid.innerHTML = pageList.map(p => {
+      const stockCls = p.stock === 'in' ? '' : (p.stock === 'low' ? 'low' : 'out');
+      const stockLab = p.stock === 'in' ? 'in stock' : (p.stock === 'low' ? 'low stock' : 'out of stock');
+      const brandCls = ({AMD:'amd', Intel:'intel', NVIDIA:'nvidia'})[p.brand] || '';
+      return `
+        <article class="card" data-id="${p.id}">
+          <div class="card-stock ${stockCls}"><span class="pdot"></span>${stockLab}</div>
+          <div class="card-tag ${brandCls}"><span class="dot"></span>${p.brand} · ${p.cat.toUpperCase()}</div>
+          <div class="card-img">${ART[p.cat] ? ART[p.cat]() : ''}</div>
+          <div class="card-name">${p.name}</div>
+          <div class="card-sub">${p.sub}</div>
+          <div class="card-foot">
+            <div class="card-price">₽ ${ru(p.price)}</div>
+            <div class="card-cta">Details →</div>
+          </div>
+        </article>`;
+    }).join('');
+  }
+  $$('#grid .card').forEach(c => c.addEventListener('click', () => openProduct(c.dataset.id)));
+
+  // pagination
+  const totalPages = Math.max(1, Math.ceil(list.length / state.perPage));
+  if (state.page > totalPages) state.page = totalPages;
+  const pages = [];
+  for (let i=1; i<=totalPages; i++) pages.push(i);
+  $("#pagination").innerHTML = pages.length <= 1 ? '' : `
+    <div class="page-info">Showing ${start+1}–${Math.min(start+state.perPage, list.length)} of ${list.length}</div>
+    <div class="pages">
+      <button class="page-btn" data-p="${Math.max(1,state.page-1)}">←</button>
+      ${pages.map(p => `<button class="page-btn ${p===state.page?'on':''}" data-p="${p}">${p}</button>`).join('')}
+      <button class="page-btn" data-p="${Math.min(totalPages,state.page+1)}">→</button>
+    </div>`;
+  $$('#pagination .page-btn').forEach(b => b.addEventListener('click', () => {
+    state.page = parseInt(b.dataset.p, 10);
+    renderResults();
+    window.scrollTo({ top: $("#grid").offsetTop - 100, behavior: 'smooth'});
+  }));
+}
+
+/* ========== PRODUCT PAGE ========== */
+function openProduct(id){
+  state.productId = id;
+  state.view = 'product';
+  $("#catalogPage").classList.add('hide');
+  $("#productPage").classList.add('show');
+  renderProduct();
+  window.scrollTo({ top: 0, behavior: 'instant' });
+}
+function backToCatalog(){
+  state.view = 'catalog';
+  $("#catalogPage").classList.remove('hide');
+  $("#productPage").classList.remove('show');
+  window.scrollTo({ top: 0, behavior: 'instant' });
+}
+$("#backBtn").addEventListener('click', backToCatalog);
+
+function renderProduct(){
+  const p = findProduct(state.productId);
+  if (!p) return;
+  $("#prodCrumb").textContent = p.name;
+  $("#prodBrand").textContent = `${p.brand} · ${p.cat.toUpperCase()}`;
+  $("#prodName").textContent = p.name;
+  $("#prodStrap").textContent = strapFor(p);
+  $("#prodPrice").textContent = ru(p.price);
+  $("#prodInstal").textContent = `or ${ru(Math.round(p.price/12))} ₽ × 12 mo · 0% APR`;
+
+  // gallery: same art four times with subtle variations (procedural)
+  const variants = [ART[p.cat](), ART[p.cat](), ART[p.cat](), ART[p.cat](), ART[p.cat]()];
+  $("#galleryMain").innerHTML = variants[0];
+  $("#galleryThumbs").innerHTML = variants.map((v,i) => `<button class="thumb ${i===0?'on':''}" data-i="${i}">${v}</button>`).join('');
+  $$("#galleryThumbs .thumb").forEach(t => t.addEventListener('click', () => {
+    $$("#galleryThumbs .thumb").forEach(x => x.classList.remove('on'));
+    t.classList.add('on');
+    $("#galleryMain").innerHTML = variants[parseInt(t.dataset.i,10)];
+  }));
+
+  // meta tiles
+  $("#prodMeta").innerHTML = topMetricsFor(p).map(([k,v]) =>
+    `<div class="it"><div class="k">${k}</div><div class="v">${v}</div></div>`).join('');
+
+  // specs table
+  $("#specTable").innerHTML = p.specs.map(([k,v]) =>
+    `<div class="row"><div>${k}</div><div>${v}</div></div>`).join('');
+
+  // benchmarks
+  $("#benchList").innerHTML = p.bench.map(([nm,val,max]) => {
+    const pct = Math.min(100, Math.max(2, val/max*100));
+    return `
+      <div class="bench-row">
+        <div class="nm">${nm}</div>
+        <div class="bench-bar"><i style="width:0"></i></div>
+        <div class="val">${ru(val)}<small></small></div>
+      </div>`;
+  }).join('');
+  requestAnimationFrame(() => {
+    $$("#benchList .bench-bar i").forEach((bar, i) => {
+      const [,val,max] = p.bench[i];
+      bar.style.width = (val/max*100) + '%';
+    });
+  });
+
+  // fps table (only for gpu/cpu)
+  const showFps = p.cat === 'gpu' || p.cat === 'cpu';
+  $("#fpsBody").innerHTML = !showFps ? `<tr><td colspan="5" style="color:var(--ink-400); padding: 40px; text-align:center;">FPS forecasts apply only to processors and graphics cards.</td></tr>` :
+    FPS_GAMES_TABLE.map(([nm,preset,weight]) => {
+      const base = (p.cat==='gpu') ? p.perf * 1.7 : p.perf * 1.4;
+      const fps1080 = Math.round(base * weight);
+      const fps1440 = Math.round(fps1080 * 0.72);
+      const fps2160 = Math.round(fps1080 * 0.42);
+      return `
+        <tr>
+          <td class="game">${nm}</td>
+          <td class="num">${fps1080}</td>
+          <td class="num" style="color: var(--cyan);">${fps1440}</td>
+          <td class="num">${fps2160}</td>
+          <td><span class="badge">${preset}</span></td>
+        </tr>`;
+    }).join('');
+
+  // reviews
+  const revs = sampleReviews(p);
+  $("#revCount").textContent = `/ ${p.reviews}`;
+  $("#revList").innerHTML = revs.map(r => `
+    <div class="rev-item">
+      <div class="rev-avatar">${r.initials}</div>
+      <div class="rev-content">
+        <div class="head"><span class="nm">${r.name}</span><span class="meta">${r.meta}</span></div>
+        <p class="quote">${r.body}</p>
+      </div>
+      <div class="rev-stars">${'★'.repeat(r.stars).split('').map(()=>'<svg viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14l-5-4.87 6.91-1.01z"/></svg>').join('')}</div>
+    </div>`).join('');
+
+  // related: same category, exclude self
+  const related = PRODUCTS.filter(x => x.cat === p.cat && x.id !== p.id).slice(0, 3);
+  $("#relatedGrid").innerHTML = related.map(r => `
+    <article class="card" data-id="${r.id}">
+      <div class="card-tag"><span class="dot"></span>${r.brand} · ${r.cat.toUpperCase()}</div>
+      <div class="card-img">${ART[r.cat]()}</div>
+      <div class="card-name">${r.name}</div>
+      <div class="card-sub">${r.sub}</div>
+      <div class="card-foot">
+        <div class="card-price">₽ ${ru(r.price)}</div>
+        <div class="card-cta">Details →</div>
+      </div>
+    </article>`).join('');
+  $$('#relatedGrid .card').forEach(c => c.addEventListener('click', () => openProduct(c.dataset.id)));
+
+  // wire tabs
+  $$('#prodTabs button').forEach(b => {
+    b.onclick = () => {
+      $$('#prodTabs button').forEach(x => x.classList.remove('on'));
+      b.classList.add('on');
+      $$('.tab-body section').forEach(s => s.classList.remove('show'));
+      $('#tab-' + b.dataset.tab).classList.add('show');
+    };
+  });
+  // reset to specs
+  $$('#prodTabs button').forEach(x => x.classList.remove('on'));
+  $$('#prodTabs button')[0].classList.add('on');
+  $$('.tab-body section').forEach(s => s.classList.remove('show'));
+  $('#tab-specs').classList.add('show');
+}
+
+function strapFor(p){
+  const lookup = {
+    cpu: "Engineered for the long sessions. Selected for thermal headroom, single-thread vigour, and the kind of cache that makes frame-times disappear.",
+    gpu: "Calibrated for high-refresh 1440p and steady 4K. Driver-validated under a 30-day stability protocol before it ever leaves the workshop floor.",
+    mb:  "A platform built around silence, signal integrity and headroom. Pre-flashed BIOS, EXPO/XMP validated against the exact memory kit we ship.",
+    ram: "Hand-binned ICs, validated at the rated profile in a real chassis under sustained load. No surprises on first boot.",
+    storage: "NAND we trust, controllers we've tortured. Burned in with sustained writes and SLC-cache drainage protocols.",
+    psu: "Quiet under load, sized with proper headroom, modular cables routed for airflow — the part you only notice when it fails.",
+    case: "A chassis chosen for thermals first, looks second — which is convenient, because it looks excellent."
+  };
+  return lookup[p.cat] || "";
+}
+function topMetricsFor(p){
+  const lookup = {
+    cpu: [["Cores", p.specs.find(s=>s[0]==='Cores')[1]], ["Boost", p.specs.find(s=>s[0]==='Boost')?.[1] || '—'], ["TDP", p.specs.find(s=>s[0]==='TDP')[1]]],
+    gpu: [["VRAM", p.specs.find(s=>s[0]==='VRAM')[1]], ["Power", p.specs.find(s=>s[0]==='Power')[1]], ["Bandwidth", p.specs.find(s=>s[0]==='Bandwidth')[1]]],
+    mb:  [["Chipset", p.specs.find(s=>s[0]==='Chipset')[1]], ["Memory", p.specs.find(s=>s[0]==='Memory')[1]], ["WiFi", p.specs.find(s=>s[0]==='WiFi')?.[1] || '—']],
+    ram: [["Capacity", p.specs.find(s=>s[0]==='Capacity')[1]], ["Speed", p.specs.find(s=>s[0]==='Speed')[1]], ["CAS", p.specs.find(s=>s[0]==='CAS')[1]]],
+    storage: [["Capacity", p.specs.find(s=>s[0]==='Capacity')[1]], ["Read", p.specs.find(s=>s[0]==='Read')[1]], ["Interface", p.specs.find(s=>s[0]==='Interface')[1]]],
+    psu: [["Wattage", p.specs.find(s=>s[0]==='Wattage')[1]], ["Cert", p.specs.find(s=>s[0]==='Cert')[1]], ["Warranty", p.specs.find(s=>s[0]==='Warranty')[1]]],
+    case:[["Form", p.specs.find(s=>s[0]==='Form')[1]], ["GPU max", p.specs.find(s=>s[0]==='GPU max')[1]], ["Radiator", p.specs.find(s=>s[0]==='Radiator max')[1]]],
+  };
+  return lookup[p.cat] || [];
+}
+
+function sampleReviews(p){
+  // procedural reviews based on product
+  const lines = {
+    cpu: [
+      "I run 12-hour Blender renders without throttle. Temps stay nominal with a 360 AIO.",
+      "Came in pre-tuned with EXPO settings ready. Boot was clean on first try.",
+      "The 3D V-Cache is real — frame-times in Cyberpunk dropped from 18ms to 11ms in my play sessions.",
+    ],
+    gpu: [
+      "Fans don't even spin under 50°C. The card is silent until you launch something serious.",
+      "At 1440p ultra I sit at 110+ in every game I care about. Frame-gen reserved for path tracing.",
+      "Card is huge but FORGE measured my case clearance to the millimetre. Fit perfectly.",
+    ],
+    mb:  [
+      "Five M.2 slots, all populated. Boot UEFI is the cleanest I've used in years.",
+      "VRMs stay cool under sustained all-core loads. No throttling on my 14900K.",
+      "BIOS came pre-flashed to the latest. Wonderful detail.",
+    ],
+    ram: [
+      "EXPO 6400 stable at 1.4V. No memory training cycles after first boot.",
+      "Trident heatspreaders fit under my D15 — verified by FORGE before shipping.",
+      "RGB is actually tasteful for once. Subtle on the slowest cycle.",
+    ],
+    storage: [
+      "Sustained writes at 6.8 GB/s for a full hour while transferring video archives. No cache drainage stutter.",
+      "Comes with FORGE's pre-formatted partition layout. Plug and play.",
+    ],
+    psu: [
+      "Hybrid mode means fanless idle. I can't hear the system at all when I'm reading.",
+      "Cables are sleeved and pre-routed — saved me ninety minutes of cable management.",
+    ],
+    case: [
+      "Tooless side panels, magnetic dust filters. Building inside this case is genuinely pleasant.",
+      "Cooling is excellent — my 4090 reports 64°C under Cyberpunk RT at 1440p.",
+    ],
+  };
+  const pool = lines[p.cat] || lines.cpu;
+  const names = [
+    ["Артём Соколов","St. Petersburg · Nebula"],
+    ["Mark Köhler","Berlin · Custom Apex"],
+    ["Yuna Takahashi","Osaka · Halcyon"],
+    ["Daria Volkov","Moscow · Bespoke"],
+    ["Tomáš Novák","Prague · Cipher"],
+  ];
+  return pool.map((body,i) => {
+    const [name, meta] = names[i % names.length];
+    const initials = name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+    return { name, meta, body, initials, stars: 5 - (i===2 ? 1 : 0) };
+  });
+}
+
+/* ========== WIRE UI ========== */
+function renderAll(){
+  renderTabs();
+  renderBrandFilter();
+  renderResults();
+}
+
+$("#searchInput").addEventListener('input', e => {
+  state.query = e.target.value.trim();
+  state.page = 1;
+  renderResults();
+});
+$("#sortSel").addEventListener('change', e => {
+  state.sort = e.target.value; renderResults();
+});
+$("#priceMin").addEventListener('input', e => {
+  const v = e.target.value === '' ? null : parseInt(e.target.value, 10);
+  state.priceMin = isNaN(v) ? null : v;
+  state.page = 1; renderResults();
+});
+$("#priceMax").addEventListener('input', e => {
+  const v = e.target.value === '' ? null : parseInt(e.target.value, 10);
+  state.priceMax = isNaN(v) ? null : v;
+  state.page = 1; renderResults();
+});
+$("#stockOnly").addEventListener('change', e => {
+  state.stockOnly = e.target.checked;
+  state.page = 1; renderResults();
+});
+$("#resetFilters").addEventListener('click', () => {
+  state.brands.clear();
+  state.priceMin = state.priceMax = null;
+  state.stockOnly = false;
+  state.query = '';
+  $("#searchInput").value = '';
+  $("#priceMin").value = '';
+  $("#priceMax").value = '';
+  $("#stockOnly").checked = false;
+  state.page = 1;
+  renderAll();
+});
+
+/* view toggle (visual only) */
+$$('.view-toggle button').forEach((b,i) => {
+  b.addEventListener('click', () => {
+    $$('.view-toggle button').forEach(x => x.classList.remove('on'));
+    b.classList.add('on');
+  });
+});
+
+/* scroll reveal */
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target);}});
+}, { threshold: 0.1 });
+$$('.reveal').forEach(el => io.observe(el));
+
+/* BOOT */
+renderAll();
+
+</script>
+</body>
+</html>

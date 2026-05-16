@@ -1,0 +1,2011 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="theme-color" content="#07080A" />
+<title>FORGE — Игровые ПК на заказ</title>
+<meta name="description" content="FORGE — премиум конфигуратор игровых ПК. Проверка совместимости, расчёт FPS, 3D-предпросмотр." />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --ink-1000:#040506; --ink-950:#07080A; --ink-900:#0D0F12; --ink-850:#101317;
+  --ink-800:#15181D; --ink-700:#1C2026; --ink-600:#2A2F37;
+  --line:rgba(255,255,255,.07); --line-strong:rgba(255,255,255,.14);
+  --ink-50:#ECEEF1; --ink-200:#C8CDD4; --ink-300:#9AA3AE; --ink-400:#7A8390; --ink-500:#5A626D;
+  --cyan:#7CF6FF; --cyan-soft:#2EE6F6; --cyan-deep:#0A6470;
+  --red:#FF4D5E; --amber:#FFB454; --green:#7EE787;
+  --ease: cubic-bezier(.2,.8,.2,1); --t: 280ms;
+  --font: "Inter", system-ui, -apple-system, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, monospace;
+  --container: 1340px;
+}
+*{box-sizing:border-box} html,body{margin:0;padding:0}
+body{
+  background: radial-gradient(1200px 800px at 80% -10%, rgba(124,246,255,.05), transparent 60%), var(--ink-950);
+  color: var(--ink-50); font-family: var(--font);
+  font-size: 15px; line-height: 1.55;
+  -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+}
+body::before{
+  content:""; position:fixed; inset:0; pointer-events:none; z-index:1;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .05 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  opacity:.4; mix-blend-mode: overlay;
+}
+.grid-bg{
+  position:fixed; inset:0; pointer-events:none; z-index:0;
+  background-image: linear-gradient(to right, rgba(255,255,255,.022) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,.022) 1px, transparent 1px);
+  background-size: 80px 80px;
+  mask-image: radial-gradient(1100px 700px at 50% 30%, #000 30%, transparent 75%);
+}
+::selection{background:var(--cyan); color:var(--ink-1000);}
+a{color:inherit; text-decoration:none}
+button{font:inherit; color:inherit; background:none; border:0; cursor:pointer}
+input,select,textarea{font:inherit; color:inherit}
+.container{ max-width: var(--container); margin:0 auto; padding: 0 28px; position:relative; z-index:2;}
+.mono{ font-family: var(--mono);}
+h1,h2,h3,h4{ font-family: var(--font); font-weight: 700; margin: 0; letter-spacing: -.02em;}
+h1{ font-size: clamp(36px, 5vw, 64px); line-height: 1.05; letter-spacing: -.03em;}
+h2{ font-size: clamp(26px, 3vw, 40px); line-height: 1.1;}
+h3{ font-size: 20px; line-height: 1.2;}
+h4{ font-size: 16px; line-height: 1.3; font-weight: 600;}
+p{margin:0}
+.eyebrow{ font-family: var(--mono); font-size: 11px; letter-spacing: .2em; text-transform: uppercase; color: var(--ink-400); display:inline-flex; align-items:center; gap:10px;}
+.eyebrow::before{ content:""; width:24px; height:1px; background: var(--cyan); box-shadow: 0 0 10px var(--cyan);}
+.nav{ position: sticky; top:0; z-index:50; backdrop-filter: blur(20px) saturate(140%); background: rgba(7,8,10,.78); border-bottom: 1px solid var(--line);}
+.nav-inner{ display:flex; align-items:center; justify-content:space-between; height:68px; max-width:var(--container); margin:0 auto; padding:0 28px;}
+.brand{ display:flex; align-items:center; gap:12px; font-weight:700; font-size:18px; letter-spacing:.04em;}
+.brand-mark{ width:26px; height:26px; background: conic-gradient(from 200deg, var(--cyan), transparent 60%); border-radius:50%; mask: radial-gradient(circle at 50% 50%, transparent 38%, #000 39%, #000 50%, transparent 51%); -webkit-mask: radial-gradient(circle at 50% 50%, transparent 38%, #000 39%, #000 50%, transparent 51%); animation: spin 14s linear infinite;}
+@keyframes spin { to { transform: rotate(360deg);}}
+.brand-text{ display:flex; flex-direction:column; line-height:1;}
+.brand-text small{ font-family: var(--mono); font-size:9px; letter-spacing:.3em; color: var(--ink-400); margin-top:3px; font-weight:400;}
+.nav-links{ display:flex; gap:28px;}
+.nav-links a{ font-family: var(--mono); font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-300); padding: 6px 0; position:relative; transition: color var(--t) var(--ease);}
+.nav-links a::after{ content:""; position:absolute; left:0; bottom:0; height:1px; width:0; background: var(--cyan); transition: width var(--t) var(--ease); box-shadow: 0 0 8px var(--cyan);}
+.nav-links a:hover{ color: var(--ink-50);}
+.nav-links a:hover::after, .nav-links a.active::after{ width: 100%;}
+.btn{ display:inline-flex; align-items:center; gap:10px; padding: 11px 18px; border-radius: 4px; font-size: 13px; font-weight: 500; letter-spacing: .02em; border: 1px solid var(--line-strong); background: var(--ink-850); color: var(--ink-50); transition: all var(--t) var(--ease);}
+.btn:hover{ border-color: rgba(124,246,255,.5); transform: translateY(-1px); box-shadow: 0 0 0 1px rgba(124,246,255,.2), 0 0 24px -8px rgba(124,246,255,.3);}
+.btn-primary{ background: linear-gradient(180deg, var(--cyan), var(--cyan-soft)); color: var(--ink-1000); border-color: transparent; font-weight: 600;}
+.btn-primary:hover{ filter: brightness(1.05); box-shadow: 0 0 30px -6px var(--cyan);}
+.btn-ghost{ background: transparent;}
+.btn .arrow{ transition: transform var(--t) var(--ease);}
+.btn:hover .arrow{ transform: translateX(3px);}
+.reveal{ opacity:0; transform: translateY(16px); transition: opacity 600ms var(--ease), transform 600ms var(--ease);}
+.reveal.in{ opacity:1; transform: none;}
+.hero{ position:relative; padding: 60px 0 80px; overflow:hidden;}
+.hero-grid{ display:grid; grid-template-columns: 6fr 5fr; gap:60px; align-items:center;}
+.hero-tag{ margin-bottom: 22px; display:flex; gap:12px; align-items:center;}
+.hero-tag .pulse{ width:8px; height:8px; border-radius:50%; background: var(--green); box-shadow: 0 0 10px var(--green); animation: pulse 2.4s ease-in-out infinite;}
+@keyframes pulse { 50% { box-shadow: 0 0 0 8px rgba(126,231,135,0);}}
+.hero p.lede{ margin-top: 24px; max-width: 480px; color: var(--ink-300); font-size: 16px; line-height:1.6;}
+.hero-cta{ margin-top: 32px; display:flex; gap: 12px; flex-wrap:wrap;}
+.hero-side{ display:flex; flex-direction:column; gap:24px;}
+.hero-readout{ display:grid; grid-template-columns: 1fr 1fr; gap:1px; background: var(--line); border:1px solid var(--line); border-radius:6px; overflow:hidden;}
+.hero-readout .row{ background: var(--ink-900); padding: 12px 14px;}
+.hero-readout .row .k{ font-family: var(--mono); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-400);}
+.hero-readout .row .v{ font-size: 16px; font-weight: 600; margin-top: 4px; font-variant-numeric: tabular-nums;}
+.hero-readout .row .v.cyan{ color: var(--cyan);}
+.hero-pc{ background: radial-gradient(400px 200px at 50% 100%, rgba(124,246,255,.08), transparent 70%); border-radius:8px; padding: 16px;}
+.hero-pc svg{ width:100%; height:auto; display:block; max-height: 540px;}
+section.sec{ padding: 70px 0; position:relative;}
+.section-head{ display:flex; justify-content:space-between; align-items:end; margin-bottom: 36px; gap:24px; flex-wrap:wrap;}
+.section-head .label{ display:flex; flex-direction:column; gap: 14px;}
+.section-head h2{ max-width: 600px;}
+.section-head .meta{ font-family: var(--mono); font-size: 11px; color: var(--ink-400); letter-spacing: .14em;}
+.pillars{ display:grid; grid-template-columns: repeat(4, 1fr); gap:1px; background: var(--line); border:1px solid var(--line); border-radius:6px; overflow:hidden;}
+.pillar{ background: var(--ink-900); padding: 26px 22px; transition: background var(--t) var(--ease); min-height: 200px; display:flex; flex-direction:column; position:relative;}
+.pillar:hover{ background: var(--ink-850);}
+.pillar:hover .pillar-icon{ color: var(--cyan);}
+.pillar-icon{ width: 28px; height: 28px; color: var(--ink-300); transition: color var(--t) var(--ease);}
+.pillar h4{ margin-top: 18px;}
+.pillar p{ color: var(--ink-400); font-size: 13px; margin-top: 8px; line-height: 1.55;}
+.pillar .num{ position:absolute; top: 14px; right: 18px; font-family: var(--mono); font-size: 10px; color: var(--ink-500); letter-spacing: .14em;}
+.tiers{ display:grid; grid-template-columns: repeat(3, 1fr); gap: 20px;}
+.tier{ border:1px solid var(--line); background: linear-gradient(180deg, var(--ink-900), var(--ink-950)); padding: 24px; border-radius: 6px; display:flex; flex-direction:column; transition: all var(--t) var(--ease); position:relative; overflow:hidden;}
+.tier::before{ content:""; position:absolute; inset:0; background: radial-gradient(400px 200px at 50% -10%, rgba(124,246,255,.12), transparent 60%); opacity:0; transition: opacity var(--t) var(--ease); pointer-events:none;}
+.tier:hover{ border-color: rgba(124,246,255,.3); transform: translateY(-3px);}
+.tier:hover::before{ opacity:1;}
+.tier-tag{ display:inline-flex; align-items:center; gap:8px; font-family: var(--mono); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-400);}
+.tier-tag .dot{ width:6px; height:6px; border-radius:50%; background: var(--cyan); box-shadow: 0 0 8px var(--cyan);}
+.tier.featured .tier-tag .dot{ background: var(--amber); box-shadow: 0 0 8px var(--amber);}
+.tier-name{ margin-top: 12px; font-size: 28px; font-weight: 700; letter-spacing: -.02em;}
+.tier-spec{ margin-top: 16px; color: var(--ink-300); font-size: 13px; display:grid; gap:6px; padding: 0; list-style:none;}
+.tier-spec li{ display:flex; gap:8px; align-items:baseline;}
+.tier-spec li::before{ content:"→"; color: var(--cyan); font-family: var(--mono); font-size: 11px;}
+.tier-foot{ margin-top: auto; padding-top: 20px; border-top:1px solid var(--line); display:flex; justify-content:space-between; align-items: flex-end;}
+.tier-price{ font-size: 26px; font-weight: 700; letter-spacing: -.02em;}
+.tier-price small{ display:block; font-family: var(--mono); font-size: 11px; color: var(--ink-400); margin-top: 4px; font-weight: 400;}
+.tier-link{ font-family: var(--mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--cyan);}
+.reviews{ display:grid; grid-template-columns: repeat(3, 1fr); gap: 16px;}
+.review{ border:1px solid var(--line); border-radius: 6px; padding: 22px; background: var(--ink-900); display:flex; flex-direction:column; gap: 14px; transition: all var(--t) var(--ease);}
+.review:hover{ border-color: rgba(124,246,255,.25);}
+.review .quote{ font-size: 15px; line-height: 1.5; color: var(--ink-50);}
+.review .by{ display:flex; align-items:center; gap:12px; margin-top: auto; padding-top: 14px; border-top: 1px solid var(--line);}
+.avatar{ width: 34px; height: 34px; border-radius: 50%; background: linear-gradient(135deg, var(--cyan-deep), var(--ink-700)); display:flex; align-items:center; justify-content:center; font-family: var(--mono); font-size: 11px; border: 1px solid var(--line-strong);}
+.by-name{ font-size: 13px; font-weight: 500;}
+.by-meta{ font-family: var(--mono); font-size: 10px; color: var(--ink-400); letter-spacing: .1em;}
+.faq-grid{ display:grid; gap:1px; background: var(--line); border:1px solid var(--line); border-radius:6px; overflow:hidden;}
+details{ background: var(--ink-900); padding: 20px 24px; cursor:pointer; transition: background var(--t) var(--ease);}
+details[open]{ background: var(--ink-850);}
+summary{ list-style:none; display:flex; align-items:center; justify-content:space-between; gap:20px;}
+summary::-webkit-details-marker{ display:none;}
+summary h4{ font-size: 16px; font-weight: 600;}
+summary .plus{ width: 22px; height: 22px; flex-shrink:0; border:1px solid var(--line-strong); border-radius:50%; display:flex; align-items:center; justify-content:center; transition: all var(--t) var(--ease); color: var(--ink-300); font-size: 14px;}
+details[open] summary .plus{ background: var(--cyan); color: var(--ink-1000); border-color: var(--cyan); transform: rotate(45deg);}
+details p{ margin-top: 12px; color: var(--ink-300); max-width: 760px; font-size: 14px; line-height: 1.6;}
+footer#siteFooter{ border-top: 1px solid var(--line); padding: 60px 0 30px; background: var(--ink-1000);}
+.foot-grid{ display:grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 50px; align-items: start;}
+.foot-mark{ font-size: 36px; font-weight: 700; letter-spacing: -.03em; color: var(--cyan);}
+.foot-col h5{ font-family: var(--mono); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-400); margin: 0 0 14px; font-weight: 400;}
+.foot-col a{ display:block; padding: 5px 0; color: var(--ink-200); transition: color var(--t) var(--ease); font-size: 13px;}
+.foot-col a:hover{ color: var(--cyan);}
+.foot-bottom{ margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--line); display:flex; justify-content: space-between; align-items: center; font-family: var(--mono); font-size: 11px; letter-spacing: .12em; color: var(--ink-500); flex-wrap:wrap; gap:12px;}
+@media (max-width: 960px){
+  .hero-grid{ grid-template-columns: 1fr; gap: 36px;}
+  .pillars{ grid-template-columns: repeat(2, 1fr);}
+  .tiers, .reviews{ grid-template-columns: 1fr;}
+  .foot-grid{ grid-template-columns: 1fr 1fr; gap: 30px;}
+  .nav-links{ gap: 18px;}
+}
+@media (max-width: 640px){
+  .nav-links{ display:none;}
+  .pillars{ grid-template-columns: 1fr;}
+  .foot-grid{ grid-template-columns: 1fr;}
+  .nav-cta .btn-ghost{ display: none;}
+}
+.cfg-layout{ display:grid; grid-template-columns: 1fr 360px; gap: 36px; margin-top: 32px;}
+@media (max-width: 1100px){ .cfg-layout{ grid-template-columns: 1fr;} }
+.presets{ display:flex; gap:8px; flex-wrap:wrap; margin-bottom: 22px;}
+.preset{ padding: 9px 14px; border:1px solid var(--line); border-radius:4px; font-family: var(--mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-300); transition: all var(--t) var(--ease);}
+.preset:hover{ color: var(--ink-50); border-color: var(--line-strong);}
+.preset.active{ background: var(--cyan); color: var(--ink-1000); border-color: var(--cyan); font-weight: 600;}
+.slots{ display:grid; gap: 12px;}
+.slot{ border:1px solid var(--line); background: var(--ink-900); border-radius:5px; padding: 18px 20px; display:grid; grid-template-columns: 32px 1fr auto; align-items:center; gap: 16px; transition: all var(--t) var(--ease); position:relative;}
+.slot:hover{ border-color: var(--line-strong); background: var(--ink-850);}
+.slot.warn{ border-color: rgba(255,180,84,.4);}
+.slot.error{ border-color: rgba(255,77,94,.5);}
+.slot-num{ font-family: var(--mono); font-size: 10px; color: var(--ink-500); letter-spacing: .1em;}
+.slot-meta{ display:flex; flex-direction:column; gap:4px; min-width:0;}
+.slot-cat{ font-family: var(--mono); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-400);}
+.slot-name{ font-size: 15px; font-weight: 500; line-height: 1.2; white-space: nowrap; overflow:hidden; text-overflow:ellipsis;}
+.slot-empty .slot-name{ color: var(--ink-400); font-weight: 400;}
+.slot-sub{ font-family: var(--mono); font-size: 10px; color: var(--ink-400); letter-spacing: .04em;}
+.slot-price{ font-family: var(--mono); font-size: 12px; color: var(--ink-50); white-space:nowrap; font-variant-numeric: tabular-nums;}
+.slot-action{ display:flex; align-items:center; gap: 12px;}
+.slot select{ background: var(--ink-800); border: 1px solid var(--line-strong); color: var(--ink-50); padding: 9px 32px 9px 12px; border-radius: 4px; font-family: var(--mono); font-size: 12px; appearance:none; -webkit-appearance:none; background-image: linear-gradient(45deg, transparent 50%, var(--cyan) 50%), linear-gradient(135deg, var(--cyan) 50%, transparent 50%); background-position: calc(100% - 16px) 50%, calc(100% - 10px) 50%; background-size: 6px 6px; background-repeat: no-repeat; cursor:pointer; min-width: 240px; max-width: 320px;}
+.slot select:focus{ outline: none; border-color: var(--cyan);}
+.alert-rail{ margin-top: 6px; font-family: var(--mono); font-size: 11px; display:flex; gap:8px; align-items:flex-start; padding: 7px 10px; border-radius: 3px; grid-column: 1 / -1;}
+.alert-rail.warn{ color: var(--amber); background: rgba(255,180,84,.06); border:1px solid rgba(255,180,84,.18);}
+.alert-rail.error{ color: var(--red); background: rgba(255,77,94,.06); border:1px solid rgba(255,77,94,.22);}
+.severity{ display:inline-flex; align-items:center; font-family: var(--mono); font-size: 9px; letter-spacing: .14em; text-transform: uppercase; padding: 1px 6px; border-radius:2px; margin-left:8px;}
+.severity.warn{ background: rgba(255,180,84,.1); color: var(--amber);}
+.severity.error{ background: rgba(255,77,94,.1); color: var(--red);}
+.summary{ position:sticky; top: 88px; border:1px solid var(--line); background: linear-gradient(180deg, var(--ink-900), var(--ink-1000)); border-radius: 6px; padding: 24px 22px; align-self: start;}
+.summary h3{ font-size: 20px; margin-bottom: 4px; display:flex; align-items:baseline; justify-content:space-between; gap: 10px;}
+.summary h3 small{ font-family: var(--mono); font-size: 10px; color: var(--ink-400); letter-spacing: .14em; text-transform: uppercase; font-weight: 400;}
+.score-ring{ margin-top: 18px; display:flex; align-items:center; gap: 16px;}
+.ring{ width: 88px; height: 88px; position:relative; flex-shrink: 0;}
+.ring svg{ transform: rotate(-90deg);}
+.ring .track{ stroke: var(--ink-700); fill:none;}
+.ring .bar{ stroke: var(--cyan); fill:none; stroke-linecap:round; transition: stroke-dashoffset 600ms var(--ease); filter: drop-shadow(0 0 6px rgba(124,246,255,.5));}
+.ring .val{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size: 24px; font-weight: 700;}
+.score-meta .lbl{ font-family: var(--mono); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-400);}
+.score-meta .tag{ display:inline-flex; padding: 3px 7px; border-radius: 3px; font-family: var(--mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; background: rgba(126,231,135,.1); color: var(--green); border:1px solid rgba(126,231,135,.25); margin-top: 6px;}
+.score-meta .tag.warn{ background: rgba(255,180,84,.08); color: var(--amber); border-color: rgba(255,180,84,.25);}
+.score-meta .tag.error{ background: rgba(255,77,94,.08); color: var(--red); border-color: rgba(255,77,94,.25);}
+.metrics{ display:grid; grid-template-columns: 1fr 1fr; gap:1px; background: var(--line); margin-top: 20px; border:1px solid var(--line); border-radius: 4px; overflow:hidden;}
+.metric{ background: var(--ink-900); padding: 12px 12px;}
+.metric .k{ font-family: var(--mono); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-400);}
+.metric .v{ font-size: 20px; font-weight: 700; margin-top: 4px; font-variant-numeric: tabular-nums;}
+.metric .v small{ font-family: var(--mono); font-size: 10px; color: var(--ink-400); letter-spacing: .1em; font-weight: 400;}
+.fps-list{ margin-top: 18px; display:grid; gap: 10px;}
+.fps{ display:grid; grid-template-columns: 1fr auto; gap: 6px; align-items:baseline;}
+.fps .name{ font-family: var(--mono); font-size: 11px; color: var(--ink-300);}
+.fps .name small{ color: var(--ink-500); margin-left: 6px;}
+.fps .val{ font-size: 16px; font-weight: 600; font-variant-numeric: tabular-nums;}
+.fps-bar{ grid-column: 1 / -1; height: 4px; background: var(--ink-800); border-radius: 2px; overflow: hidden;}
+.fps-bar i{ display:block; height:100%; background: linear-gradient(90deg, var(--cyan-deep), var(--cyan)); box-shadow: 0 0 10px rgba(124,246,255,.4); transition: width 600ms var(--ease);}
+.summary-total{ margin-top: 22px; border-top: 1px solid var(--line); padding-top: 18px; display:flex; align-items: baseline; justify-content: space-between;}
+.summary-total .k{ font-family: var(--mono); font-size: 11px; color: var(--ink-400); letter-spacing: .14em; text-transform: uppercase;}
+.summary-total .v{ font-size: 28px; font-weight: 700; text-align: right; font-variant-numeric: tabular-nums;}
+.summary-total .v small{ display:block; font-family: var(--mono); font-size: 10px; color: var(--ink-400); margin-top: 4px; font-weight: 400;}
+.summary-cta{ margin-top: 18px; display:grid; gap: 8px;}
+.summary-cta .btn{ width:100%; justify-content:center;}
+@media (max-width: 720px){
+  .slot{ grid-template-columns: 28px 1fr; gap: 12px;}
+  .slot-action{ grid-column: 1 / -1;}
+  .slot select{ width: 100%; min-width: 0; max-width: none;}
+}
+.cat-head{ padding: 50px 0 28px;}
+.cat-title-row{ display:flex; justify-content:space-between; align-items:end; gap: 32px; flex-wrap: wrap;}
+.cat-count{ display:flex; flex-direction:column; align-items:flex-end; gap: 4px;}
+.cat-count .n{ font-size: 44px; font-weight: 700; line-height: 1;}
+.cat-count .l{ font-family: var(--mono); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-400);}
+.crumb{ font-family: var(--mono); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-400); margin-bottom: 14px;}
+.crumb b{ color: var(--ink-50); font-weight: 500;}
+.crumb .sep{ color: var(--ink-600); margin: 0 8px;}
+.tabs{ margin-top: 28px; display:flex; gap:0; border-bottom: 1px solid var(--line); flex-wrap: wrap;}
+.tab{ font-family: var(--mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; padding: 12px 18px; color: var(--ink-400); border-bottom: 1px solid transparent; margin-bottom: -1px; transition: all var(--t) var(--ease); display:inline-flex; align-items:center; gap:8px;}
+.tab:hover{ color: var(--ink-50);}
+.tab.active{ color: var(--ink-50); border-bottom-color: var(--cyan);}
+.tab .ct{ color: var(--ink-500); font-size: 10px;}
+.cat-layout{ display:grid; grid-template-columns: 260px 1fr; gap: 32px; padding: 28px 0 70px;}
+@media (max-width: 1000px){ .cat-layout{ grid-template-columns: 1fr;} }
+.filters{ position:sticky; top: 88px; align-self: start; border:1px solid var(--line); background: var(--ink-900); border-radius: 6px; padding: 20px; display:flex; flex-direction:column; gap: 22px;}
+.filter-title{ font-family: var(--mono); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-400); display:flex; justify-content:space-between; align-items:center;}
+.filter-group{ display:flex; flex-direction:column; gap: 8px;}
+.f-check{ display:flex; align-items:center; justify-content:space-between; gap: 10px; cursor:pointer; padding: 3px 0; font-size: 13px; transition: color var(--t) var(--ease);}
+.f-check:hover{ color: var(--cyan);}
+.f-check input{ display: none;}
+.f-check .box{ width: 14px; height: 14px; border: 1px solid var(--ink-600); border-radius: 2px; position:relative; background: var(--ink-850); transition: all var(--t) var(--ease);}
+.f-check input:checked + .box{ background: var(--cyan); border-color: var(--cyan);}
+.f-check input:checked + .box::after{ content:""; position:absolute; left: 3px; top: 0; width: 4px; height: 8px; border: solid var(--ink-1000); border-width: 0 2px 2px 0; transform: rotate(45deg);}
+.f-check .ct{ font-family: var(--mono); font-size: 10px; color: var(--ink-500);}
+.f-check .lab{ display:flex; align-items:center; gap: 8px;}
+.price-range{ display:flex; align-items:center; gap: 6px; font-family: var(--mono); font-size: 11px;}
+.price-range input{ background: var(--ink-850); border: 1px solid var(--line-strong); border-radius: 3px; padding: 7px 9px; width: 100%; color: var(--ink-50); font-family: var(--mono); font-size: 12px;}
+.price-range input:focus{ outline: none; border-color: var(--cyan);}
+.filter-reset{ font-family: var(--mono); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-400); border-bottom: 1px solid var(--line-strong); padding-bottom: 1px; transition: color var(--t) var(--ease);}
+.filter-reset:hover{ color: var(--cyan);}
+.results-head{ display:flex; align-items:center; justify-content:space-between; gap: 14px; margin-bottom: 20px; flex-wrap: wrap;}
+.search{ position:relative; flex: 1; max-width: 460px;}
+.search input{ width:100%; background: var(--ink-900); border: 1px solid var(--line); border-radius: 4px; padding: 11px 14px 11px 38px; font-size: 13px; color: var(--ink-50); transition: all var(--t) var(--ease);}
+.search input:focus{ outline: none; border-color: var(--cyan); box-shadow: 0 0 0 1px rgba(124,246,255,.2);}
+.search svg{ position:absolute; left: 13px; top: 50%; transform: translateY(-50%); width: 14px; height: 14px; color: var(--ink-400);}
+.sort-row{ display:flex; align-items:center; gap: 10px;}
+.sort-row .lab{ font-family: var(--mono); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-400);}
+.select-mini{ background: var(--ink-900); border:1px solid var(--line); border-radius: 4px; padding: 10px 32px 10px 12px; font-family: var(--mono); font-size: 12px; color: var(--ink-50); cursor: pointer; appearance: none; -webkit-appearance: none; background-image: linear-gradient(45deg, transparent 50%, var(--cyan) 50%), linear-gradient(135deg, var(--cyan) 50%, transparent 50%); background-position: calc(100% - 16px) 50%, calc(100% - 10px) 50%; background-size: 6px 6px; background-repeat: no-repeat;}
+.select-mini:focus{ outline: none; border-color: var(--cyan);}
+.grid{ display:grid; grid-template-columns: repeat(3, 1fr); gap: 14px;}
+@media (max-width: 1100px){ .grid{ grid-template-columns: repeat(2, 1fr);} }
+@media (max-width: 600px){ .grid{ grid-template-columns: 1fr;} }
+.card{ background: var(--ink-900); padding: 20px; display:flex; flex-direction:column; cursor: pointer; transition: all var(--t) var(--ease); border: 1px solid var(--line); border-radius: 6px; min-height: 360px; position:relative;}
+.card:hover{ background: var(--ink-850); border-color: var(--line-strong); transform: translateY(-2px);}
+.card:hover .card-img > svg{ transform: scale(1.05);}
+.card:hover .card-name{ color: var(--cyan);}
+.card-tag{ font-family: var(--mono); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-400); display:inline-flex; align-items:center; gap: 8px;}
+.card-tag .dot{ width: 6px; height: 6px; border-radius: 50%; background: var(--cyan); box-shadow: 0 0 8px var(--cyan);}
+.card-tag.amd .dot{ background: var(--red); box-shadow: 0 0 8px var(--red);}
+.card-tag.intel .dot{ background: var(--cyan-soft); box-shadow: 0 0 8px var(--cyan-soft);}
+.card-tag.nvidia .dot{ background: var(--green); box-shadow: 0 0 8px var(--green);}
+.card-img{ margin-top: 10px; height: 130px; display:flex; align-items:center; justify-content:center; background: radial-gradient(180px 70px at 50% 100%, rgba(124,246,255,.06), transparent 70%); border-radius: 3px; overflow: hidden;}
+.card-img > svg{ width: 78%; height: 100%; transition: transform 400ms var(--ease);}
+.card-name{ margin-top: 14px; font-size: 17px; font-weight: 600; line-height: 1.2; transition: color var(--t) var(--ease);}
+.card-sub{ margin-top: 4px; font-family: var(--mono); font-size: 10px; color: var(--ink-400);}
+.card-foot{ margin-top: auto; padding-top: 16px; display:flex; align-items: baseline; justify-content: space-between; border-top: 1px solid var(--line);}
+.card-price{ font-size: 19px; font-weight: 700; font-variant-numeric: tabular-nums;}
+.card-cta{ font-family: var(--mono); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--cyan);}
+.card-stock{ position:absolute; top: 16px; right: 18px; font-family: var(--mono); font-size: 9px; letter-spacing: .14em; text-transform: uppercase; color: var(--green); display:inline-flex; align-items:center; gap:5px;}
+.card-stock .pdot{ width: 5px; height: 5px; border-radius:50%; background: currentColor; box-shadow: 0 0 6px currentColor;}
+.card-stock.low{ color: var(--amber);}
+.card-stock.out{ color: var(--ink-500);}
+.pagination{ margin-top: 30px; display:flex; align-items:center; justify-content:space-between; gap: 14px; flex-wrap: wrap;}
+.pages{ display:flex; gap: 4px;}
+.page-btn{ width: 36px; height: 36px; display:inline-flex; align-items:center; justify-content:center; font-family: var(--mono); font-size: 12px; border:1px solid var(--line); color: var(--ink-300); border-radius: 4px; transition: all var(--t) var(--ease);}
+.page-btn:hover{ border-color: var(--line-strong); color: var(--ink-50);}
+.page-btn.on{ background: var(--cyan); color: var(--ink-1000); border-color: var(--cyan); font-weight: 600;}
+.page-info{ font-family: var(--mono); font-size: 11px; color: var(--ink-400);}
+.empty{ padding: 60px 20px; text-align: center; border: 1px dashed var(--line); border-radius: 4px; grid-column: 1 / -1;}
+.empty h3{ margin-bottom: 6px;}
+.empty p{ color: var(--ink-400); font-size: 13px;}
+.prod-head{ padding: 32px 0 20px; display:flex; align-items:center; justify-content:space-between; flex-wrap: wrap; gap: 14px;}
+.back-link{ font-family: var(--mono); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-300); display:inline-flex; gap: 8px; align-items:center; transition: color var(--t) var(--ease);}
+.back-link:hover{ color: var(--cyan);}
+.prod-layout{ display:grid; grid-template-columns: 6fr 5fr; gap: 48px; align-items: start;}
+@media (max-width: 1000px){ .prod-layout{ grid-template-columns: 1fr;} }
+.gallery{ position:sticky; top: 88px; display:flex; flex-direction:column; gap: 12px;}
+.gallery-main{ border:1px solid var(--line); border-radius: 6px; background: radial-gradient(500px 240px at 50% 90%, rgba(124,246,255,.08), transparent 70%), linear-gradient(180deg, var(--ink-900), var(--ink-950)); height: 420px; display:flex; align-items:center; justify-content:center; overflow:hidden;}
+.gallery-main svg{ width: 70%; height: 75%;}
+.gallery-thumbs{ display:grid; grid-template-columns: repeat(5, 1fr); gap: 6px;}
+.thumb{ height: 68px; border:1px solid var(--line); border-radius: 4px; background: var(--ink-900); cursor: pointer; transition: all var(--t) var(--ease); display:flex; align-items:center; justify-content:center; overflow: hidden;}
+.thumb:hover{ border-color: var(--line-strong);}
+.thumb.on{ border-color: var(--cyan); box-shadow: 0 0 0 1px rgba(124,246,255,.2);}
+.thumb svg{ width: 65%; height: 65%; opacity: .65;}
+.prod-info h1{ font-size: clamp(28px, 4vw, 44px); line-height: 1.05; margin-top: 10px;}
+.prod-brand{ font-family: var(--mono); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--cyan);}
+.prod-strap{ margin-top: 18px; color: var(--ink-300); font-size: 14px; line-height: 1.6; max-width: 540px;}
+.prod-price-row{ margin-top: 26px; display:flex; align-items: baseline; gap: 16px; flex-wrap: wrap;}
+.prod-price{ font-size: 36px; font-weight: 700; font-variant-numeric: tabular-nums;}
+.prod-instal{ font-family: var(--mono); font-size: 12px; color: var(--ink-400);}
+.prod-cta-row{ margin-top: 22px; display:flex; gap: 10px; flex-wrap: wrap;}
+.prod-meta{ margin-top: 30px; display:grid; grid-template-columns: repeat(3, 1fr); gap:1px; background: var(--line); border:1px solid var(--line); border-radius: 4px; overflow: hidden;}
+.prod-meta .it{ background: var(--ink-900); padding: 12px 14px;}
+.prod-meta .it .k{ font-family: var(--mono); font-size: 9px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-400);}
+.prod-meta .it .v{ font-size: 16px; font-weight: 600; margin-top: 3px;}
+.tab-row{ margin-top: 44px; display:flex; gap: 0; border-bottom: 1px solid var(--line); flex-wrap: wrap;}
+.tab-row button{ font-family: var(--mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; padding: 12px 18px; color: var(--ink-400); margin-bottom: -1px; border-bottom: 1px solid transparent; transition: all var(--t) var(--ease);}
+.tab-row button:hover{ color: var(--ink-50);}
+.tab-row button.on{ color: var(--ink-50); border-bottom-color: var(--cyan);}
+.tab-body{ padding: 28px 0;}
+.tab-body section{ display: none;}
+.tab-body section.show{ display: block;}
+.spec-table{ display:grid; grid-template-columns: 1fr 2fr; border: 1px solid var(--line); border-radius: 4px; overflow: hidden;}
+.spec-table .row{ display: contents;}
+.spec-table .row > div{ padding: 12px 18px; border-top: 1px solid var(--line); background: var(--ink-900); font-size: 13px;}
+.spec-table .row:first-child > div{ border-top: 0;}
+.spec-table .row > div:first-child{ font-family: var(--mono); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-400);}
+.bench-list{ display:flex; flex-direction:column; gap: 16px;}
+.bench-row{ display:grid; grid-template-columns: 200px 1fr 90px; gap: 16px; align-items:center;}
+.bench-row .nm{ font-family: var(--mono); font-size: 11px; color: var(--ink-300);}
+.bench-bar{ height: 14px; background: var(--ink-800); border-radius: 2px; overflow: hidden;}
+.bench-bar i{ display:block; height: 100%; background: linear-gradient(90deg, var(--cyan-deep), var(--cyan)); box-shadow: 0 0 10px rgba(124,246,255,.4); transition: width 600ms var(--ease); width: 0;}
+.bench-row .val{ font-size: 18px; font-weight: 700; text-align: right; font-variant-numeric: tabular-nums;}
+.fps-table{ border:1px solid var(--line); border-radius: 4px; overflow: hidden;}
+.fps-table table{ width:100%; border-collapse: collapse;}
+.fps-table th, .fps-table td{ padding: 12px 16px; text-align: left; border-bottom: 1px solid var(--line); font-size: 13px;}
+.fps-table thead th{ font-family: var(--mono); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-400); background: var(--ink-850);}
+.fps-table td.num{ font-size: 18px; font-weight: 700; font-variant-numeric: tabular-nums;}
+.fps-table tbody tr:hover{ background: rgba(124,246,255,.03);}
+.fps-table .game{ font-weight: 500;}
+.fps-table .badge{ display: inline-block; font-family: var(--mono); font-size: 9px; letter-spacing: .12em; text-transform: uppercase; padding: 3px 6px; border-radius: 2px; border: 1px solid var(--line-strong); color: var(--ink-300);}
+.rev-list{ display:flex; flex-direction:column; gap:1px; background: var(--line); border:1px solid var(--line); border-radius: 4px; overflow: hidden;}
+.rev-item{ background: var(--ink-900); padding: 20px 22px; display:grid; grid-template-columns: 40px 1fr auto; gap: 14px;}
+.rev-avatar{ width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(135deg, var(--cyan-deep), var(--ink-700)); display:flex; align-items:center; justify-content:center; font-family: var(--mono); font-size: 12px; border: 1px solid var(--line-strong);}
+.rev-content .head{ display:flex; align-items:baseline; gap: 10px; margin-bottom: 4px;}
+.rev-content .nm{ font-size: 13px; font-weight: 500;}
+.rev-content .meta{ font-family: var(--mono); font-size: 10px; color: var(--ink-400);}
+.rev-content .quote{ color: var(--ink-200); font-size: 13px; line-height: 1.55; margin: 0;}
+.rev-stars{ display:flex; gap: 1px;}
+.rev-stars svg{ width: 12px; height: 12px; color: var(--cyan);}
+.related-section{ margin-top: 50px;}
+.related-grid{ display:grid; grid-template-columns: repeat(3, 1fr); gap: 14px;}
+@media (max-width: 800px){ .related-grid{ grid-template-columns: 1fr;} }
+.viewer-page{ position:relative;}
+.viewer-app{ position:relative; display:grid; grid-template-columns: 280px 1fr 320px; grid-template-rows: 1fr 72px; height: calc(100vh - 68px); min-height: 600px; border-bottom: 1px solid var(--line);}
+.viewer-app .side-l, .viewer-app .side-r{ border-right: 1px solid var(--line); padding: 20px; overflow: hidden auto; background: rgba(13,15,18,.7); backdrop-filter: blur(20px); display:flex; flex-direction:column; gap: 18px;}
+.viewer-app .side-r{ border-right: 0; border-left: 1px solid var(--line);}
+.panel-title{ font-family: var(--mono); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-400); display:flex; align-items:center; gap:8px;}
+.panel-title::before{ content:""; width: 16px; height: 1px; background: var(--cyan); box-shadow: 0 0 6px var(--cyan);}
+.stage{ position:relative; overflow: hidden; background: radial-gradient(circle at 50% 60%, rgba(124,246,255,.08), transparent 60%);}
+#viewerCanvas{ width:100%; height: 100%; display: block; touch-action: none;}
+.hud{ position:absolute; inset: 20px; pointer-events:none; font-family: var(--mono); font-size: 10px; letter-spacing: .14em; color: var(--ink-400);}
+.hud .c{ position:absolute;}
+.hud .c-tl{ top: 0; left: 0;} .hud .c-tr{ top: 0; right: 0;} .hud .c-bl{ bottom: 0; left: 0;} .hud .c-br{ bottom: 0; right: 0;}
+.viewbox{ position:absolute; inset: 44px; border: 1px solid rgba(255,255,255,.04); pointer-events:none;}
+.viewbox::before, .viewbox::after, .viewbox > i::before, .viewbox > i::after{ content:""; position:absolute; width: 12px; height: 12px; border: 1px solid var(--cyan); opacity: .7;}
+.viewbox::before{ top: -1px; left: -1px; border-right: 0; border-bottom: 0;}
+.viewbox::after{ top: -1px; right: -1px; border-left: 0; border-bottom: 0;}
+.viewbox > i::before{ bottom: -1px; left: -1px; border-right: 0; border-top: 0;}
+.viewbox > i::after{ bottom: -1px; right: -1px; border-left: 0; border-top: 0;}
+.viewbox > i{ position:absolute; inset: 0;}
+.viewer-loading{ position:absolute; inset: 0; display:flex; align-items:center; justify-content:center; flex-direction:column; gap: 12px; font-family: var(--mono); font-size: 11px; color: var(--ink-400); letter-spacing: .14em; text-transform: uppercase;}
+.viewer-loading .spinner{ width: 24px; height: 24px; border: 2px solid var(--ink-700); border-top-color: var(--cyan); border-radius: 50%; animation: spinL 1s linear infinite;}
+@keyframes spinL { to { transform: rotate(360deg);}}
+.comp-list{ display:flex; flex-direction:column; gap: 6px;}
+.comp{ display:grid; grid-template-columns: 24px 1fr 8px; gap: 8px; align-items:center; padding: 10px 12px; border: 1px solid var(--line); border-radius: 4px; background: var(--ink-900); cursor: pointer; transition: all var(--t) var(--ease);}
+.comp:hover{ border-color: var(--line-strong); background: var(--ink-850);}
+.comp.on{ border-color: var(--cyan); background: linear-gradient(180deg, rgba(124,246,255,.04), var(--ink-900));}
+.comp .nu{ font-family: var(--mono); font-size: 10px; color: var(--ink-500);}
+.comp .meta .cat{ font-family: var(--mono); font-size: 9px; letter-spacing: .14em; color: var(--ink-400); text-transform: uppercase;}
+.comp .meta .nm{ font-size: 13px; font-weight: 500; margin-top: 2px;}
+.comp .cdot{ width: 6px; height: 6px; border-radius: 50%; background: var(--cyan); box-shadow: 0 0 6px var(--cyan); opacity: 0;}
+.comp.on .cdot{ opacity: 1;}
+.spec-card{ border: 1px solid var(--line); background: var(--ink-900); border-radius: 4px; padding: 16px;}
+.spec-card h3{ margin: 0; font-size: 18px; font-weight: 600;}
+.spec-card p.desc{ color: var(--ink-300); font-size: 12px; line-height: 1.55; margin: 10px 0 0;}
+.spec-grid{ display:grid; grid-template-columns: 1fr 1fr; gap:1px; background: var(--line); margin-top: 12px; border:1px solid var(--line); border-radius: 3px; overflow:hidden;}
+.spec-grid .it{ background: var(--ink-900); padding: 8px 10px;}
+.spec-grid .it .k{ font-family: var(--mono); font-size: 9px; letter-spacing: .14em; color: var(--ink-400); text-transform: uppercase;}
+.spec-grid .it .v{ font-size: 14px; font-weight: 600; margin-top: 2px;}
+.spec-card .label-line{ display:flex; align-items:center; gap: 8px; margin-bottom: 6px;}
+.spec-card .label-line .id{ font-family: var(--mono); font-size: 10px; color: var(--ink-500); letter-spacing: .12em;}
+.spec-card .label-line .pill-mini{ font-family: var(--mono); font-size: 9px; letter-spacing: .14em; text-transform: uppercase; padding: 2px 6px; border-radius: 2px; color: var(--cyan); border: 1px solid rgba(124,246,255,.3); background: rgba(124,246,255,.04);}
+.fps-row{ display:grid; grid-template-columns: 1fr auto; gap: 4px; align-items: baseline;}
+.fps-row .nm{ font-family: var(--mono); font-size: 11px; color: var(--ink-300);}
+.fps-row .vv{ font-size: 16px; font-weight: 700; font-variant-numeric: tabular-nums;}
+.viewer-bottom{ grid-column: 1 / -1; display:flex; align-items:center; justify-content:space-between; gap: 20px; padding: 0 24px; border-top: 1px solid var(--line); background: rgba(7,8,10,.6); backdrop-filter: blur(20px); flex-wrap: wrap;}
+.tools{ display:flex; gap: 6px; flex-wrap: wrap;}
+.tool{ font-family: var(--mono); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; padding: 7px 12px; border-radius: 3px; border: 1px solid var(--line); color: var(--ink-300); display:inline-flex; gap: 7px; align-items: center; background: var(--ink-850); transition: all var(--t) var(--ease);}
+.tool:hover{ border-color: var(--line-strong); color: var(--ink-50);}
+.tool.on{ border-color: var(--cyan); color: var(--cyan);}
+.tool .sw{ width: 5px; height: 5px; border-radius: 50%; background: currentColor; box-shadow: 0 0 6px currentColor;}
+.slider-row{ display:flex; align-items:center; gap: 12px;}
+.slider-row .lab{ font-family: var(--mono); font-size: 10px; color: var(--ink-400); letter-spacing: .14em; text-transform: uppercase;}
+.viewer-bottom input[type="range"]{ -webkit-appearance: none; appearance: none; height: 2px; background: var(--ink-700); border-radius: 1px; width: 140px; outline: none;}
+.viewer-bottom input[type="range"]::-webkit-slider-thumb{ -webkit-appearance: none; width: 12px; height: 12px; border-radius: 50%; background: var(--cyan); box-shadow: 0 0 10px var(--cyan); cursor: pointer; border: 0;}
+.viewer-bottom input[type="range"]::-moz-range-thumb{ width: 12px; height: 12px; border-radius: 50%; background: var(--cyan); box-shadow: 0 0 10px var(--cyan); border: 0;}
+.swatches{ display:flex; gap: 5px;}
+.swatch{ width: 22px; height: 22px; border-radius: 50%; border: 1px solid var(--line-strong); cursor: pointer; transition: all var(--t) var(--ease);}
+.swatch:hover{ transform: scale(1.1);}
+.swatch.on{ box-shadow: 0 0 0 2px var(--ink-950), 0 0 0 3px var(--cyan);}
+.spot{ position:absolute; pointer-events:auto; transform: translate(-50%,-50%); display:flex; align-items:center; gap:8px;}
+.spot .sring{ width: 16px; height: 16px; border-radius: 50%; border: 1px solid var(--cyan); background: rgba(124,246,255,.12); position:relative; box-shadow: 0 0 10px rgba(124,246,255,.4);}
+.spot .sring::after{ content:""; position:absolute; inset: -5px; border-radius:50%; border: 1px solid var(--cyan); animation: ping 2.4s var(--ease) infinite; opacity: .5;}
+@keyframes ping { 70%, 100% { transform: scale(1.6); opacity: 0;}}
+.spot .lbl{ font-family: var(--mono); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; background: rgba(7,8,10,.78); padding: 4px 8px; border: 1px solid var(--line-strong); border-radius: 2px; white-space: nowrap;}
+.spot .lbl b{ color: var(--cyan); margin-right: 6px;}
+@media (max-width: 1100px){ .viewer-app{ grid-template-columns: 220px 1fr 260px;} }
+@media (max-width: 900px){
+  .viewer-app{ grid-template-columns: 1fr; grid-template-rows: 50vh auto auto auto; height: auto;}
+  .viewer-app .side-l, .viewer-app .side-r{ border: 0; border-top: 1px solid var(--line); max-height: 36vh;}
+}
+@media (prefers-reduced-motion: reduce){
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important;}
+}
+</style>
+</head>
+<body>
+
+<div class="grid-bg" aria-hidden="true"></div>
+
+<header class="nav">
+  <div class="nav-inner">
+    <a href="#/" class="brand" aria-label="FORGE">
+      <span class="brand-mark"></span>
+      <span class="brand-text">FORGE<small>МАСТЕРСКАЯ · МОСКВА</small></span>
+    </a>
+    <nav class="nav-links" id="navLinks">
+      <a href="#/" data-route="/">Главная</a>
+      <a href="#/configurator" data-route="/configurator">Конфигуратор</a>
+      <a href="#/catalog" data-route="/catalog">Каталог</a>
+      <a href="#/viewer" data-route="/viewer">3D&nbsp;Просмотр</a>
+    </nav>
+    <div class="nav-cta">
+      <a class="btn btn-ghost" href="#/">Войти</a>
+      <a class="btn btn-primary" href="#/configurator">Собрать <span class="arrow">→</span></a>
+    </div>
+  </div>
+</header>
+
+<main id="outlet" style="transition: opacity 200ms cubic-bezier(.2,.8,.2,1);"></main>
+
+<footer id="siteFooter">
+  <div class="container">
+    <div class="foot-grid">
+      <div>
+        <div class="foot-mark">forge.</div>
+        <p style="color:var(--ink-400); margin-top:18px; max-width:340px; font-size:13px; line-height:1.6;">Мастерская, собирающая игровые компьютеры с тщанием часовщика и дисциплиной серверной.</p>
+      </div>
+      <div class="foot-col"><h5>Сборка</h5><a href="#/configurator">Конфигуратор</a><a href="#/catalog">Каталог</a><a href="#/viewer">3D-просмотр</a></div>
+      <div class="foot-col"><h5>Мастерская</h5><a href="#/">О процессе</a><a href="#/">Протокол прогона</a><a href="#/">Карьера</a></div>
+      <div class="foot-col"><h5>Связь</h5><a href="#/">workshop@forge.systems</a><a href="#/">+7 (495) 000-00-00</a><a href="#/">Telegram</a></div>
+    </div>
+    <div class="foot-bottom"><span>© 2026 FORGE Systems</span><span>Москва · 55.7558° N · 37.6173° E</span></div>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script id="forge-js">
+document.addEventListener("DOMContentLoaded", function(){
+"use strict";
+
+/* ===========================================================
+   FORGE — Catalog (USD, 10+ per category, realistic market)
+   =========================================================== */
+
+const CATALOG = {
+  cpu: [
+    { id:"cpu-7500f",    name:"AMD Ryzen 5 7500F",          price:159, socket:"AM5",     tdp:65,  perf:78,  cores:6 },
+    { id:"cpu-7600",     name:"AMD Ryzen 5 7600",           price:189, socket:"AM5",     tdp:65,  perf:80,  cores:6 },
+    { id:"cpu-7600x",    name:"AMD Ryzen 5 7600X",          price:219, socket:"AM5",     tdp:105, perf:85,  cores:6 },
+    { id:"cpu-7700x",    name:"AMD Ryzen 7 7700X",          price:289, socket:"AM5",     tdp:105, perf:92,  cores:8 },
+    { id:"cpu-7800x3d",  name:"AMD Ryzen 7 7800X3D",        price:399, socket:"AM5",     tdp:120, perf:108, cores:8,  gamingBoost:1.18 },
+    { id:"cpu-7900x",    name:"AMD Ryzen 9 7900X",          price:399, socket:"AM5",     tdp:170, perf:106, cores:12 },
+    { id:"cpu-9700x",    name:"AMD Ryzen 7 9700X",          price:359, socket:"AM5",     tdp:65,  perf:104, cores:8 },
+    { id:"cpu-9800x3d",  name:"AMD Ryzen 7 9800X3D",        price:479, socket:"AM5",     tdp:120, perf:118, cores:8,  gamingBoost:1.22 },
+    { id:"cpu-7950x3d",  name:"AMD Ryzen 9 7950X3D",        price:599, socket:"AM5",     tdp:120, perf:120, cores:16, gamingBoost:1.12 },
+    { id:"cpu-9950x",    name:"AMD Ryzen 9 9950X",          price:649, socket:"AM5",     tdp:170, perf:124, cores:16 },
+    { id:"cpu-12400f",   name:"Intel Core i5-12400F",       price:129, socket:"LGA1700", tdp:65,  perf:74,  cores:6 },
+    { id:"cpu-13600k",   name:"Intel Core i5-13600K",       price:249, socket:"LGA1700", tdp:125, perf:90,  cores:14 },
+    { id:"cpu-14600k",   name:"Intel Core i5-14600K",       price:289, socket:"LGA1700", tdp:125, perf:94,  cores:14 },
+    { id:"cpu-14700k",   name:"Intel Core i7-14700K",       price:389, socket:"LGA1700", tdp:125, perf:110, cores:20 },
+    { id:"cpu-14900k",   name:"Intel Core i9-14900K",       price:579, socket:"LGA1700", tdp:125, perf:122, cores:24 },
+    { id:"cpu-265k",     name:"Intel Core Ultra 7 265K",    price:399, socket:"LGA1851", tdp:125, perf:112, cores:20 },
+    { id:"cpu-285k",     name:"Intel Core Ultra 9 285K",    price:589, socket:"LGA1851", tdp:125, perf:118, cores:24 },
+  ],
+  gpu: [
+    { id:"gpu-4060",      name:"GeForce RTX 4060 8GB",       price:299,  tdp:115, fps:62,  length:245 },
+    { id:"gpu-4060ti",    name:"GeForce RTX 4060 Ti 16GB",   price:449,  tdp:165, fps:78,  length:267 },
+    { id:"gpu-4070",      name:"GeForce RTX 4070 12GB",      price:549,  tdp:200, fps:96,  length:285 },
+    { id:"gpu-4070sup",   name:"GeForce RTX 4070 Super",     price:599,  tdp:220, fps:108, length:295 },
+    { id:"gpu-4070tisup", name:"GeForce RTX 4070 Ti Super",  price:799,  tdp:285, fps:118, length:304 },
+    { id:"gpu-4080sup",   name:"GeForce RTX 4080 Super",     price:999,  tdp:320, fps:132, length:336 },
+    { id:"gpu-4090",      name:"GeForce RTX 4090 24GB",      price:1799, tdp:450, fps:168, length:357 },
+    { id:"gpu-5070",      name:"GeForce RTX 5070 12GB",      price:549,  tdp:250, fps:118, length:300 },
+    { id:"gpu-5070ti",    name:"GeForce RTX 5070 Ti 16GB",   price:749,  tdp:300, fps:138, length:320 },
+    { id:"gpu-5080",      name:"GeForce RTX 5080 16GB",      price:999,  tdp:360, fps:158, length:336 },
+    { id:"gpu-5090",      name:"GeForce RTX 5090 32GB",      price:1999, tdp:575, fps:198, length:360 },
+    { id:"gpu-7700xt",    name:"Radeon RX 7700 XT 12GB",     price:419,  tdp:245, fps:88,  length:280 },
+    { id:"gpu-7800xt",    name:"Radeon RX 7800 XT 16GB",     price:499,  tdp:263, fps:96,  length:310 },
+    { id:"gpu-7900xt",    name:"Radeon RX 7900 XT 20GB",     price:699,  tdp:315, fps:120, length:320 },
+    { id:"gpu-7900xtx",   name:"Radeon RX 7900 XTX 24GB",    price:899,  tdp:355, fps:142, length:330 },
+    { id:"gpu-9070xt",    name:"Radeon RX 9070 XT 16GB",     price:649,  tdp:304, fps:130, length:312 },
+  ],
+  mb: [
+    { id:"mb-a620",    name:"MSI PRO A620M-E",                 price:89,  socket:"AM5",     memType:"DDR5", maxMem:6400, form:"mATX" },
+    { id:"mb-b650",    name:"ASUS TUF B650-PLUS WIFI",         price:189, socket:"AM5",     memType:"DDR5", maxMem:6400, form:"ATX" },
+    { id:"mb-b650e",   name:"MSI MAG B650 Tomahawk WIFI",      price:219, socket:"AM5",     memType:"DDR5", maxMem:6800, form:"ATX" },
+    { id:"mb-b850",    name:"Gigabyte B850 AORUS Elite",       price:229, socket:"AM5",     memType:"DDR5", maxMem:8000, form:"ATX" },
+    { id:"mb-x670e",   name:"Gigabyte X670E AORUS Elite",      price:329, socket:"AM5",     memType:"DDR5", maxMem:7200, form:"ATX" },
+    { id:"mb-x870",    name:"ASUS ROG STRIX X870-A GAMING",    price:419, socket:"AM5",     memType:"DDR5", maxMem:8000, form:"ATX" },
+    { id:"mb-x870e",   name:"ASUS ROG Crosshair X870E Hero",   price:699, socket:"AM5",     memType:"DDR5", maxMem:8200, form:"ATX" },
+    { id:"mb-b760",    name:"MSI PRO B760-P WIFI",             price:159, socket:"LGA1700", memType:"DDR5", maxMem:7200, form:"ATX" },
+    { id:"mb-z790",    name:"MSI MAG Z790 Tomahawk WIFI",      price:289, socket:"LGA1700", memType:"DDR5", maxMem:7800, form:"ATX" },
+    { id:"mb-z790hr",  name:"ASUS ROG Maximus Z790 Hero",      price:629, socket:"LGA1700", memType:"DDR5", maxMem:8000, form:"ATX" },
+    { id:"mb-z890",    name:"Gigabyte Z890 AORUS Elite",       price:329, socket:"LGA1851", memType:"DDR5", maxMem:8400, form:"ATX" },
+    { id:"mb-z890hr",  name:"ASUS ROG Maximus Z890 Hero",      price:759, socket:"LGA1851", memType:"DDR5", maxMem:8800, form:"ATX" },
+  ],
+  ram: [
+    { id:"ram-16-5600",  name:"Crucial Pro 16GB DDR5-5600 CL46",        price:39,  speed:5600, size:16 },
+    { id:"ram-32-5600",  name:"Kingston Fury Beast 32GB DDR5-5600",     price:79,  speed:5600, size:32 },
+    { id:"ram-32-6000",  name:"Corsair Vengeance 32GB DDR5-6000 CL30",  price:99,  speed:6000, size:32 },
+    { id:"ram-32-6000g", name:"G.Skill Flare X5 32GB DDR5-6000 CL30",   price:109, speed:6000, size:32 },
+    { id:"ram-32-6400",  name:"G.Skill Trident Z5 32GB DDR5-6400 CL30", price:139, speed:6400, size:32 },
+    { id:"ram-32-7200",  name:"Corsair Dominator 32GB DDR5-7200",       price:189, speed:7200, size:32 },
+    { id:"ram-48-7200",  name:"G.Skill Trident Z5 RGB 48GB DDR5-7200",  price:229, speed:7200, size:48 },
+    { id:"ram-64-5600",  name:"Kingston Fury 64GB DDR5-5600",           price:179, speed:5600, size:64 },
+    { id:"ram-64-6000",  name:"Corsair Vengeance 64GB DDR5-6000",       price:219, speed:6000, size:64 },
+    { id:"ram-64-6400",  name:"G.Skill Trident Z5 64GB DDR5-6400",      price:259, speed:6400, size:64 },
+    { id:"ram-64-7200",  name:"Corsair Dominator 64GB DDR5-7200",       price:329, speed:7200, size:64 },
+    { id:"ram-96-6400",  name:"G.Skill Trident Z5 96GB DDR5-6400",      price:359, speed:6400, size:96 },
+  ],
+  storage: [
+    { id:"ssd-500-g4",  name:"WD Black SN770 500GB Gen4",   price:49,  size:500 },
+    { id:"ssd-1t-g4b",  name:"WD Black SN850X 1TB Gen4",    price:89,  size:1000 },
+    { id:"ssd-1t-g4s",  name:"Samsung 990 PRO 1TB Gen4",    price:109, size:1000 },
+    { id:"ssd-2t-g4",   name:"Samsung 990 PRO 2TB Gen4",    price:179, size:2000 },
+    { id:"ssd-2t-g4w",  name:"WD Black SN850X 2TB Gen4",    price:169, size:2000 },
+    { id:"ssd-2t-g4k",  name:"Kingston KC3000 2TB Gen4",    price:149, size:2000 },
+    { id:"ssd-1t-g5",   name:"Crucial T705 1TB Gen5",       price:179, size:1000 },
+    { id:"ssd-2t-g5",   name:"Crucial T705 2TB Gen5",       price:289, size:2000 },
+    { id:"ssd-2t-g5s",  name:"Samsung 9100 PRO 2TB Gen5",   price:299, size:2000 },
+    { id:"ssd-4t-g4",   name:"Samsung 990 PRO 4TB Gen4",    price:349, size:4000 },
+    { id:"ssd-4t-g5",   name:"Crucial T705 4TB Gen5",       price:539, size:4000 },
+    { id:"ssd-8t-g4",   name:"WD Black SN850X 8TB Gen4",    price:749, size:8000 },
+  ],
+  psu: [
+    { id:"psu-650",   name:"Corsair RM650e 80+ Gold",       price:89,  watt:650 },
+    { id:"psu-750",   name:"Corsair RM750x 80+ Gold",       price:129, watt:750 },
+    { id:"psu-750g",  name:"Seasonic FOCUS GX 750 Gold",    price:129, watt:750 },
+    { id:"psu-850",   name:"Corsair RM850x 80+ Gold",       price:159, watt:850 },
+    { id:"psu-850s",  name:"Seasonic FOCUS GX 850 Gold",    price:149, watt:850 },
+    { id:"psu-1000",  name:"Corsair HX1000 80+ Platinum",   price:229, watt:1000 },
+    { id:"psu-1000s", name:"Seasonic PRIME TX 1000 Titan",  price:299, watt:1000 },
+    { id:"psu-1200",  name:"Corsair HX1200i 80+ Platinum",  price:319, watt:1200 },
+    { id:"psu-1200s", name:"Seasonic PRIME PX 1200 Plat",   price:289, watt:1200 },
+    { id:"psu-1300",  name:"be quiet! Dark Power 13 1300W", price:339, watt:1300 },
+    { id:"psu-1600",  name:"Seasonic PRIME TX 1600 Titan",  price:449, watt:1600 },
+    { id:"psu-1650",  name:"Corsair AX1600i Titanium",      price:579, watt:1650 },
+  ],
+  case: [
+    { id:"case-nr200",   name:"Cooler Master NR200P (mATX)",  price:99,  gpuMax:330, radMax:240, form:"mATX" },
+    { id:"case-pop",     name:"Fractal Pop Air (ATX)",        price:79,  gpuMax:405, radMax:360, form:"ATX" },
+    { id:"case-meshify", name:"Fractal Meshify 2 (ATX)",      price:159, gpuMax:467, radMax:360, form:"ATX" },
+    { id:"case-define",  name:"Fractal Define 7 (ATX)",       price:199, gpuMax:467, radMax:420, form:"ATX" },
+    { id:"case-h5",      name:"NZXT H5 Flow (ATX)",           price:99,  gpuMax:410, radMax:360, form:"ATX" },
+    { id:"case-h7",      name:"NZXT H7 Flow (ATX)",           price:139, gpuMax:435, radMax:360, form:"ATX" },
+    { id:"case-h9",      name:"NZXT H9 Flow (ATX)",           price:179, gpuMax:435, radMax:360, form:"ATX" },
+    { id:"case-o11",     name:"Lian Li O11 Dynamic EVO",      price:189, gpuMax:422, radMax:360, form:"ATX" },
+    { id:"case-o11-xl",  name:"Lian Li O11D EVO XL",          price:249, gpuMax:460, radMax:420, form:"E-ATX" },
+    { id:"case-lancool", name:"Lian Li Lancool 216 (ATX)",    price:109, gpuMax:392, radMax:360, form:"ATX" },
+    { id:"case-evolv",   name:"Phanteks Evolv X II",          price:229, gpuMax:445, radMax:420, form:"ATX" },
+    { id:"case-torrent", name:"Fractal Torrent (ATX)",        price:209, gpuMax:461, radMax:420, form:"ATX" },
+  ],
+  cooler: [
+    { id:"cool-pa120",   name:"Thermalright Peerless Assassin 120",  price:39,  type:"air", tdpCap:265, radSize:0 },
+    { id:"cool-pa120se", name:"Thermalright Peerless Assassin 120 SE", price:49, type:"air", tdpCap:265, radSize:0 },
+    { id:"cool-u12a",    name:"Noctua NH-U12A",                      price:109, type:"air", tdpCap:230, radSize:0 },
+    { id:"cool-d15",     name:"Noctua NH-D15",                       price:119, type:"air", tdpCap:250, radSize:0 },
+    { id:"cool-d15g2",   name:"Noctua NH-D15 G2",                    price:149, type:"air", tdpCap:270, radSize:0 },
+    { id:"cool-240lf",   name:"Arctic Liquid Freezer III 240",       price:99,  type:"aio", tdpCap:220, radSize:240 },
+    { id:"cool-280lf",   name:"Arctic Liquid Freezer III 280",       price:109, type:"aio", tdpCap:260, radSize:280 },
+    { id:"cool-360lf",   name:"Arctic Liquid Freezer III 360",       price:129, type:"aio", tdpCap:300, radSize:360 },
+    { id:"cool-420lf",   name:"Arctic Liquid Freezer III 420",       price:149, type:"aio", tdpCap:360, radSize:420 },
+    { id:"cool-h150",    name:"Corsair iCUE H150i ELITE LCD",        price:269, type:"aio", tdpCap:340, radSize:360 },
+    { id:"cool-h170",    name:"Corsair iCUE H170i ELITE 420",        price:299, type:"aio", tdpCap:360, radSize:420 },
+    { id:"cool-z73",     name:"NZXT Kraken Elite 360",               price:289, type:"aio", tdpCap:340, radSize:360 },
+  ],
+};
+
+const SLOTS = [
+  { key:"cpu",     cat:"cpu",     label:"Процессор",       sub:"AM5 / LGA1700 / LGA1851" },
+  { key:"mb",      cat:"mb",      label:"Материнская плата", sub:"Сокет · чипсет" },
+  { key:"cooler",  cat:"cooler",  label:"Охлаждение",      sub:"AIO / Воздушное" },
+  { key:"ram",     cat:"ram",     label:"Память",          sub:"DDR5 · 16–96 ГБ" },
+  { key:"gpu",     cat:"gpu",     label:"Видеокарта",      sub:"NVIDIA · AMD" },
+  { key:"storage", cat:"storage", label:"Накопитель",      sub:"NVMe Gen4 / Gen5" },
+  { key:"psu",     cat:"psu",     label:"Блок питания",    sub:"80+ Gold или выше" },
+  { key:"case",    cat:"case",    label:"Корпус",          sub:"ATX · mATX" },
+];
+
+const PRESETS = {
+  esports: { cpu:"cpu-7500f",    mb:"mb-b650",   cooler:"cool-pa120",   ram:"ram-32-6000",  gpu:"gpu-4060",      storage:"ssd-1t-g4b", psu:"psu-650",   case:"case-h5" },
+  nebula:  { cpu:"cpu-7800x3d",  mb:"mb-x670e",  cooler:"cool-360lf",   ram:"ram-32-6400",  gpu:"gpu-4070tisup", storage:"ssd-2t-g4",  psu:"psu-850",   case:"case-o11" },
+  halcyon: { cpu:"cpu-14900k",   mb:"mb-z790hr", cooler:"cool-420lf",   ram:"ram-64-7200",  gpu:"gpu-4090",      storage:"ssd-4t-g5",  psu:"psu-1200",  case:"case-evolv" },
+  apex:    { cpu:"cpu-9950x",    mb:"mb-x870e",  cooler:"cool-h170",    ram:"ram-96-6400",  gpu:"gpu-5090",      storage:"ssd-4t-g5",  psu:"psu-1600",  case:"case-o11-xl" },
+  creator: { cpu:"cpu-7950x3d",  mb:"mb-x670e",  cooler:"cool-360lf",   ram:"ram-64-6400",  gpu:"gpu-4080sup",   storage:"ssd-2t-g5",  psu:"psu-1000",  case:"case-meshify" },
+  clear:   { cpu:null, mb:null, cooler:null, ram:null, gpu:null, storage:null, psu:null, case:null },
+};
+
+const FPS_GAMES = [
+  { id:"cp2077",    name:"Cyberpunk 2077",       note:"RT Ultra",       gpuW:1.55, cpuW:0.25 },
+  { id:"valorant",  name:"Valorant",             note:"Соревновательно",gpuW:0.20, cpuW:1.00 },
+  { id:"cs2",       name:"Counter-Strike 2",     note:"Max",            gpuW:0.45, cpuW:0.80 },
+  { id:"alanwake",  name:"Alan Wake II",         note:"Path Tracing",   gpuW:1.75, cpuW:0.15 },
+  { id:"flightsim", name:"MS Flight Sim 2024",   note:"Ultra",          gpuW:1.20, cpuW:0.95 },
+  { id:"bg3",       name:"Baldur's Gate 3",      note:"Ultra",          gpuW:0.90, cpuW:0.55 },
+];
+
+const FPS_GAMES_TABLE = [
+  ["Cyberpunk 2077","RT Ultra",1.0],["Alan Wake II","Path Tracing",0.85],
+  ["MS Flight Sim 2024","Ultra",1.2],["Baldur's Gate 3","Ultra",1.6],
+  ["The Witcher 3","Ultra+",2.1],["Hogwarts Legacy","Ultra",1.7],
+  ["Forza Motorsport","Extreme",1.8],["Counter-Strike 2","Max",5.2],
+  ["Valorant","Соревнов.",6.6],["Fortnite","Epic",2.3],
+  ["Apex Legends","Max",3.0],["Red Dead Redemption 2","Ultra",1.4],
+];
+
+const CATEGORIES = [
+  { id:"all", label:"Все компоненты" }, { id:"cpu", label:"Процессоры" },
+  { id:"gpu", label:"Видеокарты" }, { id:"mb", label:"Платы" },
+  { id:"ram", label:"Память" }, { id:"storage", label:"Накопители" },
+  { id:"psu", label:"Питание" }, { id:"case", label:"Корпуса" }, { id:"cooler", label:"Охлаждение" },
+];
+
+
+/* ============ PRODUCTS for catalog (auto-built from CATALOG) ============ */
+const PRODUCT_META = {
+  cpu: { strap: "Селектировано по тепловому запасу, однопоточной мощи и кэшу, который убирает фризы на 1% low." },
+  gpu: { strap: "Откалибровано для 1440p high-refresh и стабильного 4K. Драйверы и стабильность проверены 30-дневным протоколом." },
+  mb:  { strap: "Платформа подобрана по VRM, целостности сигнала и заголовкам. BIOS прошит и валидирован под нашу память." },
+  ram: { strap: "Селектированные IC, EXPO/XMP-профиль проверен в реальном корпусе под нагрузкой." },
+  storage: { strap: "NAND, которой мы доверяем, контроллеры, которые мы пытали. Sustained write без проседаний кэша." },
+  psu: { strap: "Тихо под нагрузкой, с правильным запасом, кабели проложены под airflow — деталь, которую замечаешь только когда она ломается." },
+  case: { strap: "Корпус выбран по термальной эффективности, эстетика — приятный бонус." },
+  cooler: { strap: "Подобрано по сочетанию шума и теплоотвода. Каждый кулер проверен на нашем стенде с реальным TDP-потоком." },
+};
+
+function brandOf(name){
+  if (/Ryzen|Radeon|^AMD/.test(name)) return "AMD";
+  if (/Intel|Core/.test(name)) return "Intel";
+  if (/GeForce|NVIDIA|RTX/.test(name)) return "NVIDIA";
+  if (/Corsair/.test(name)) return "Corsair";
+  if (/Seasonic/.test(name)) return "Seasonic";
+  if (/Samsung/.test(name)) return "Samsung";
+  if (/G\.Skill/.test(name)) return "G.Skill";
+  if (/Kingston/.test(name)) return "Kingston";
+  if (/Crucial/.test(name)) return "Crucial";
+  if (/^WD /.test(name)) return "WD";
+  if (/Noctua/.test(name)) return "Noctua";
+  if (/Thermalright/.test(name)) return "Thermalright";
+  if (/Arctic/.test(name)) return "Arctic";
+  if (/NZXT/.test(name)) return "NZXT";
+  if (/Fractal/.test(name)) return "Fractal";
+  if (/Lian Li/.test(name)) return "Lian Li";
+  if (/Phanteks/.test(name)) return "Phanteks";
+  if (/Cooler Master/.test(name)) return "Cooler Master";
+  if (/be quiet/.test(name)) return "be quiet!";
+  if (/MSI/.test(name)) return "MSI";
+  if (/ASUS|TUF|ROG/.test(name)) return "ASUS";
+  if (/Gigabyte|AORUS/.test(name)) return "Gigabyte";
+  return "FORGE";
+}
+
+const SPEC_BUILDERS = {
+  cpu: p => [
+    ["Ядра", String(p.cores)],
+    ["Сокет", p.socket],
+    ["TDP", p.tdp + " Вт"],
+    ["Производительность", String(p.perf)],
+    ["Поколение", p.socket==="LGA1851"?"Core Ultra":(/9\d{3}/.test(p.id)?"Zen 5":"Zen 4 / 13–14 Gen")],
+  ],
+  gpu: p => [
+    ["Видеопамять", (p.id.includes("8GB")?"8":p.vram||"") + ""],
+    ["Энергопотребление", p.tdp + " Вт"],
+    ["Длина", p.length + " мм"],
+    ["Производительность", String(p.fps)],
+    ["Архитектура", /5\d{3}/.test(p.id)?"Blackwell":/4\d{3}/.test(p.id)?"Ada Lovelace":/79\d/.test(p.id)?"RDNA 3":"RDNA 3"],
+  ],
+  mb: p => [
+    ["Сокет", p.socket],
+    ["Память", `${p.memType} ${p.maxMem}`],
+    ["Форм-фактор", p.form],
+    ["PCIe", "Gen5 ×16"],
+    ["M.2", "×4"],
+  ],
+  ram: p => [
+    ["Объём", p.size + " ГБ"],
+    ["Скорость", p.speed + " МТ/с"],
+    ["Тип", "DDR5"],
+    ["EXPO", "Да"],
+    ["XMP 3.0", "Да"],
+  ],
+  storage: p => [
+    ["Объём", p.size>=1000 ? (p.size/1000)+" ТБ" : p.size+" ГБ"],
+    ["Интерфейс", /g5/.test(p.id)?"PCIe 5.0 ×4":"PCIe 4.0 ×4"],
+    ["Форм-фактор", "M.2 2280"],
+    ["Чтение", (/g5/.test(p.id)?"14500":"7400") + " МБ/с"],
+    ["Запись", (/g5/.test(p.id)?"12500":"6900") + " МБ/с"],
+  ],
+  psu: p => [
+    ["Мощность", p.watt + " Вт"],
+    ["Сертификат", p.watt>=1300?"80+ Titanium":p.watt>=1000?"80+ Platinum":"80+ Gold"],
+    ["Модульность", "Полностью модульный"],
+    ["Гарантия", p.watt>=1200?"12 лет":"10 лет"],
+    ["Подключение GPU", "12V-2x6 / PCIe"],
+  ],
+  case: p => [
+    ["Форм-фактор", p.form],
+    ["Макс. видеокарта", p.gpuMax + " мм"],
+    ["Макс. радиатор", p.radMax + " мм"],
+    ["Боковая панель", "Закалённое стекло"],
+    ["Передняя панель", /h5|h7|h9|nr200|pop|meshify|torrent|lancool/.test(p.id) ? "Сетка" : "Глухая"],
+  ],
+  cooler: p => [
+    ["Тип", p.type==="aio" ? `AIO ${p.radSize} мм` : "Воздушное"],
+    ["TDP запас", p.tdpCap + " Вт"],
+    ["Шум", p.tdpCap>=300?"22–38 дБА":"19–34 дБА"],
+    ["Совместимость", "AM5 / LGA 1700 / LGA 1851"],
+    ["Гарантия", "6 лет"],
+  ],
+};
+
+const BENCH_BUILDERS = {
+  cpu: p => [
+    ["Cinebench R23 multi", Math.round(p.perf*180), 24000],
+    ["Cinebench R23 single", Math.round(1700+p.perf*4), 2300],
+    ["Geekbench 6 single", Math.round(2400+p.perf*6), 3200],
+  ],
+  gpu: p => [
+    ["3DMark Time Spy", Math.round(p.fps*200), 35000],
+    ["3DMark Port Royal", Math.round(p.fps*135), 23000],
+    ["Blender BMW (с)", Math.max(5, Math.round(2000/p.fps)), 5],
+  ],
+  mb: p => [["DDR5 OC", p.maxMem, 8800]],
+  ram: p => [["AIDA64 read (МБ/с)", Math.round(p.speed*14), 110000], ["Latency (нс)", Math.round(100-p.speed/100), 50]],
+  storage: p => [["Послед. чтение (МБ/с)", /g5/.test(p.id)?14500:7400, 14500]],
+  psu: p => [["КПД 50% (%)", p.watt>=1300?94:92, 95]],
+  case: p => [["Δt CPU (°C)", p.radMax>=420?12:p.radMax>=360?14:18, 12]],
+  cooler: p => [["Δt @ 200W (°C)", p.tdpCap>=300?16:p.tdpCap>=240?20:24, 12]],
+};
+
+const SUB_BUILDERS = {
+  cpu: p => `${p.cores} ядер · ${p.socket} · ${p.tdp} Вт`,
+  gpu: p => `${p.tdp} Вт · ${p.length} мм`,
+  mb: p => `${p.socket} · ${p.form} · ${p.memType}`,
+  ram: p => `${p.size} ГБ · DDR5-${p.speed}`,
+  storage: p => `${p.size>=1000?(p.size/1000)+" ТБ":p.size+" ГБ"} · ${/g5/.test(p.id)?"Gen5":"Gen4"}`,
+  psu: p => `${p.watt} Вт · модульный`,
+  case: p => `${p.form} · до ${p.gpuMax} мм GPU`,
+  cooler: p => p.type==="aio" ? `AIO ${p.radSize} мм` : "Воздушное",
+};
+
+// Build PRODUCTS by enriching every CATALOG item
+const PRODUCTS = [];
+let _idx = 0;
+Object.keys(CATALOG).forEach(cat => {
+  CATALOG[cat].forEach(p => {
+    _idx++;
+    const perf = p.perf || p.fps || p.watt/10 || p.size/100 || p.maxMem/100 || p.tdpCap/3 || 80;
+    PRODUCTS.push({
+      id: p.id, cat, brand: brandOf(p.name), name: p.name,
+      price: p.price, perf,
+      stock: _idx % 11 === 0 ? "low" : "in",
+      isNew: /9800x3d|9950x|9700x|265k|285k|5070|5070ti|5080|5090|9070xt|x870|z890|d15g2|9100|t705|h170|o11-xl/.test(p.id),
+      rating: 4.5 + (Math.abs((_idx*7) % 5))/10,
+      reviews: 50 + (_idx*47) % 600,
+      sub: SUB_BUILDERS[cat](p),
+      specs: SPEC_BUILDERS[cat](p),
+      bench: BENCH_BUILDERS[cat](p),
+    });
+  });
+});
+
+
+/* ============ STATE ============ */
+const APP = {
+  cfg: { selection: { ...PRESETS.nebula } },
+  cat: { category:"all", brands:new Set(), priceMin:null, priceMax:null, stockOnly:false, sort:"featured", query:"", page:1, perPage:9 },
+  viewer: null,
+};
+
+const $ = (s, r=document) => r.querySelector(s);
+const $$ = (s, r=document) => Array.from(r.querySelectorAll(s));
+const findPart = (cat, id) => id ? CATALOG[cat].find(p=>p.id===id) : null;
+const findProduct = id => PRODUCTS.find(p => p.id === id);
+const usd = n => "$" + n.toLocaleString("en-US");
+
+/* ============ ENGINE ============ */
+function checkCompatibility(sel){
+  const issues = [];
+  const cpu = findPart("cpu", sel.cpu), mb = findPart("mb", sel.mb), ram = findPart("ram", sel.ram);
+  const gpu = findPart("gpu", sel.gpu), psu = findPart("psu", sel.psu);
+  const cs = findPart("case", sel.case), cl = findPart("cooler", sel.cooler);
+  if (cpu && mb && cpu.socket !== mb.socket){
+    issues.push({slot:"mb", severity:"error", msg:`Несовместимость сокетов · ${cpu.name} требует ${cpu.socket}, материнская плата — ${mb.socket}.`});
+  }
+  if (ram && mb && ram.speed > mb.maxMem){
+    issues.push({slot:"ram", severity:"warn", msg:`Память будет работать ниже частоты · DDR5-${ram.speed} превышает лимит платы DDR5-${mb.maxMem}.`});
+  }
+  if (cpu && cl && cl.tdpCap < cpu.tdp){
+    issues.push({slot:"cooler", severity:"error", msg:`Охлаждение недостаточно · ${cl.name} рассчитан на ${cl.tdpCap} Вт, процессору нужно ${cpu.tdp} Вт.`});
+  }
+  if (gpu && cs && gpu.length > cs.gpuMax){
+    issues.push({slot:"case", severity:"error", msg:`Видеокарта не поместится · ${gpu.name} длиной ${gpu.length} мм, корпус допускает ${cs.gpuMax} мм.`});
+  }
+  if (cl && cs && cl.type==="aio" && cl.radSize > cs.radMax){
+    issues.push({slot:"cooler", severity:"warn", msg:`Радиатор на пределе · ${cl.radSize} мм при лимите корпуса ${cs.radMax} мм.`});
+  }
+  if (cpu && gpu){
+    const draw = cpu.tdp + gpu.tdp + 120;
+    const need = Math.ceil(draw / 0.7);
+    if (psu && psu.watt < need){
+      issues.push({slot:"psu", severity:"error", msg:`Блок питания слишком слаб · система потребляет ~${draw} Вт, нужен запас от ${need} Вт. Текущий: ${psu.watt} Вт.`});
+    }
+  }
+  return issues;
+}
+
+function computeMetrics(sel){
+  const cpu = findPart("cpu", sel.cpu), gpu = findPart("gpu", sel.gpu), psu = findPart("psu", sel.psu);
+  const tdp = (cpu?cpu.tdp:0) + (gpu?gpu.tdp:0) + 120;
+  const recPsu = Math.ceil(tdp / 0.7);
+  const headroom = psu ? Math.max(0, Math.round((psu.watt - tdp) / psu.watt * 100)) : 0;
+  const total = Object.keys(sel).reduce((a,k)=>a + (findPart(k, sel[k])?.price || 0), 0);
+  const cpuPerf = cpu?cpu.perf:0, gpuPerf = gpu?gpu.fps:0;
+  const balance = (cpuPerf && gpuPerf) ? Math.min(cpuPerf, gpuPerf*0.9)/Math.max(cpuPerf, gpuPerf*0.9) : 0;
+  const score = Math.round(((cpuPerf*0.35)+(gpuPerf*0.55))*0.7 + balance*30);
+  return { tdp, recPsu, headroom, total, score: Math.min(99, Math.max(0,score)) };
+}
+
+function computeFps(sel){
+  const cpu = findPart("cpu", sel.cpu), gpu = findPart("gpu", sel.gpu);
+  if (!cpu || !gpu) return FPS_GAMES.map(g => ({...g, fps:0}));
+  const cpuFps = cpu.perf * (cpu.gamingBoost || 1) * 1.6;
+  const gpuFps = gpu.fps;
+  return FPS_GAMES.map(g => ({ ...g, fps: Math.min(540, Math.round(Math.min(gpuFps/g.gpuW, cpuFps/g.cpuW))) }));
+}
+
+
+/* ============ Realistic SVG ART ============ */
+const ART = {
+  cpu: () => `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+    <rect x="38" y="38" width="124" height="124" rx="10" fill="#1a1f26" stroke="#3a4250"/>
+    <rect x="50" y="50" width="100" height="100" rx="4" fill="#2a313b" stroke="#4a5260"/>
+    <rect x="62" y="62" width="76" height="76" rx="2" fill="#0E1116" stroke="#3a4250"/>
+    <text x="100" y="98" text-anchor="middle" font-family="Inter" font-size="11" font-weight="700" fill="#7CF6FF">FORGE</text>
+    <text x="100" y="114" text-anchor="middle" font-family="JetBrains Mono" font-size="7" fill="#5A626D" letter-spacing="2">CHIP</text>
+    <g fill="#3a4250">
+      ${Array.from({length:14},(_,i)=>`<rect x="${44+i*8}" y="30" width="5" height="6" rx="1"/>`).join('')}
+      ${Array.from({length:14},(_,i)=>`<rect x="${44+i*8}" y="164" width="5" height="6" rx="1"/>`).join('')}
+      ${Array.from({length:14},(_,i)=>`<rect x="30" y="${44+i*8}" width="6" height="5" rx="1"/>`).join('')}
+      ${Array.from({length:14},(_,i)=>`<rect x="164" y="${44+i*8}" width="6" height="5" rx="1"/>`).join('')}
+    </g>
+    <circle cx="48" cy="48" r="2.5" fill="#FFB454"/>
+  </svg>`,
+  gpu: () => `<svg viewBox="0 0 320 160" xmlns="http://www.w3.org/2000/svg">
+    <rect x="10" y="18" width="300" height="124" rx="4" fill="#1a1f26" stroke="#3a4250"/>
+    <rect x="14" y="22" width="292" height="116" rx="3" fill="#0E1116"/>
+    <circle cx="80" cy="80" r="34" fill="#0a0c10" stroke="#3a4250"/>
+    <circle cx="160" cy="80" r="34" fill="#0a0c10" stroke="#3a4250"/>
+    <circle cx="240" cy="80" r="34" fill="#0a0c10" stroke="#3a4250"/>
+    <g stroke="#4a5260" stroke-width="1.6" fill="none">
+      <path d="M80 46 L80 114 M46 80 L114 80 M55 55 L105 105 M105 55 L55 105"/>
+      <path d="M160 46 L160 114 M126 80 L194 80 M135 55 L185 105 M185 55 L135 105"/>
+      <path d="M240 46 L240 114 M206 80 L274 80 M215 55 L265 105 M265 55 L215 105"/>
+    </g>
+    <circle cx="80" cy="80" r="6" fill="#1a1f26" stroke="#4a5260"/>
+    <circle cx="160" cy="80" r="6" fill="#1a1f26" stroke="#4a5260"/>
+    <circle cx="240" cy="80" r="6" fill="#1a1f26" stroke="#4a5260"/>
+    <rect x="14" y="138" width="292" height="4" fill="#7CF6FF" opacity=".7"/>
+    <text x="160" y="34" text-anchor="middle" font-family="Inter" font-size="9" font-weight="700" fill="#5A626D" letter-spacing="2">FORGE / RTX</text>
+  </svg>`,
+  ram: () => `<svg viewBox="0 0 280 160" xmlns="http://www.w3.org/2000/svg">
+    <g transform="translate(20,16)">
+      <rect x="0" y="0" width="120" height="128" rx="3" fill="#1a1f26" stroke="#3a4250"/>
+      <rect x="0" y="0" width="120" height="14" fill="#7CF6FF" opacity=".85"/>
+      <rect x="6" y="20" width="108" height="76" fill="#0E1116" stroke="#2A3038"/>
+      <text x="60" y="62" text-anchor="middle" font-family="Inter" font-size="12" font-weight="700" fill="#7CF6FF">FORGE</text>
+      <text x="60" y="76" text-anchor="middle" font-family="JetBrains Mono" font-size="7" fill="#5A626D" letter-spacing="2">DDR5</text>
+      ${Array.from({length:9},(_,j)=>`<rect x="${8+j*13}" y="104" width="10" height="20" fill="#2A3038"/>`).join('')}
+    </g>
+    <g transform="translate(160,16)">
+      <rect x="0" y="0" width="120" height="128" rx="3" fill="#1a1f26" stroke="#3a4250"/>
+      <rect x="0" y="0" width="120" height="14" fill="#7CF6FF" opacity=".85"/>
+      <rect x="6" y="20" width="108" height="76" fill="#0E1116" stroke="#2A3038"/>
+      <text x="60" y="62" text-anchor="middle" font-family="Inter" font-size="12" font-weight="700" fill="#7CF6FF">FORGE</text>
+      <text x="60" y="76" text-anchor="middle" font-family="JetBrains Mono" font-size="7" fill="#5A626D" letter-spacing="2">DDR5</text>
+      ${Array.from({length:9},(_,j)=>`<rect x="${8+j*13}" y="104" width="10" height="20" fill="#2A3038"/>`).join('')}
+    </g>
+  </svg>`,
+  mb: () => `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+    <rect x="14" y="14" width="172" height="172" rx="3" fill="#0a0c10" stroke="#3a4250"/>
+    <rect x="36" y="34" width="56" height="56" rx="4" fill="#1a1f26" stroke="#3a4250"/>
+    <rect x="44" y="42" width="40" height="40" rx="2" fill="#0E1116" stroke="#3a4250"/>
+    <text x="64" y="66" text-anchor="middle" font-family="Inter" font-size="8" font-weight="700" fill="#7CF6FF">CPU</text>
+    ${Array.from({length:4},(_,i)=>`<rect x="${108+i*14}" y="34" width="10" height="80" fill="#1a1f26" stroke="#2A3038"/>`).join('')}
+    ${Array.from({length:4},(_,i)=>`<rect x="${108+i*14}" y="34" width="10" height="3" fill="#7CF6FF" opacity=".7"/>`).join('')}
+    <rect x="36" y="120" width="120" height="44" rx="2" fill="#1a1f26" stroke="#2A3038"/>
+    <rect x="40" y="128" width="112" height="3" fill="#3a4250"/>
+    <text x="96" y="148" text-anchor="middle" font-family="JetBrains Mono" font-size="8" fill="#5A626D" letter-spacing="2">PCIE 5.0 ×16</text>
+    <rect x="160" y="120" width="14" height="44" fill="#1a1f26" stroke="#2A3038"/>
+    <circle cx="170" cy="170" r="5" fill="#7CF6FF"/>
+    <rect x="14" y="14" width="172" height="3" fill="#7CF6FF" opacity=".4"/>
+  </svg>`,
+  storage: () => `<svg viewBox="0 0 280 120" xmlns="http://www.w3.org/2000/svg">
+    <rect x="20" y="36" width="240" height="48" rx="3" fill="#1a1f26" stroke="#3a4250"/>
+    <rect x="30" y="44" width="48" height="32" fill="#0E1116" stroke="#3a4250"/>
+    <rect x="84" y="44" width="48" height="32" fill="#0E1116" stroke="#3a4250"/>
+    <rect x="138" y="44" width="48" height="32" fill="#0E1116" stroke="#3a4250"/>
+    <rect x="192" y="44" width="48" height="32" fill="#0E1116" stroke="#3a4250"/>
+    <text x="140" y="100" text-anchor="middle" font-family="Inter" font-size="9" font-weight="700" fill="#5A626D" letter-spacing="2">FORGE / NVMe Gen5</text>
+    <rect x="244" y="40" width="12" height="6" fill="#7EE787"/>
+  </svg>`,
+  psu: () => `<svg viewBox="0 0 220 140" xmlns="http://www.w3.org/2000/svg">
+    <rect x="16" y="16" width="188" height="108" rx="3" fill="#1a1f26" stroke="#3a4250"/>
+    <circle cx="74" cy="70" r="44" fill="#0a0c10" stroke="#3a4250"/>
+    <g stroke="#4a5260" stroke-width="2" fill="none">
+      <line x1="74" y1="26" x2="74" y2="114"/><line x1="30" y1="70" x2="118" y2="70"/>
+      <line x1="42" y1="38" x2="106" y2="102"/><line x1="106" y1="38" x2="42" y2="102"/>
+    </g>
+    <circle cx="74" cy="70" r="8" fill="#1a1f26" stroke="#4a5260"/>
+    <rect x="130" y="30" width="60" height="40" rx="2" fill="#0E1116" stroke="#3a4250"/>
+    <text x="160" y="54" text-anchor="middle" font-family="Inter" font-size="9" font-weight="700" fill="#7CF6FF">80+</text>
+    <rect x="130" y="78" width="14" height="14" rx="2" fill="#0E1116"/>
+    <rect x="148" y="78" width="14" height="14" rx="2" fill="#0E1116"/>
+    <rect x="166" y="78" width="14" height="14" rx="2" fill="#0E1116"/>
+    <rect x="130" y="96" width="60" height="12" rx="2" fill="#0E1116"/>
+  </svg>`,
+  cooler: () => `<svg viewBox="0 0 280 140" xmlns="http://www.w3.org/2000/svg">
+    <rect x="16" y="34" width="248" height="72" rx="6" fill="#1a1f26" stroke="#3a4250"/>
+    ${Array.from({length:3},(_,i)=>`
+      <circle cx="${60+i*80}" cy="70" r="26" fill="#0a0c10" stroke="#3a4250"/>
+      <line x1="${60+i*80-26}" y1="70" x2="${60+i*80+26}" y2="70" stroke="#4a5260" stroke-width="2"/>
+      <line x1="${60+i*80}" y1="44" x2="${60+i*80}" y2="96" stroke="#4a5260" stroke-width="2"/>
+      <line x1="${60+i*80-18}" y1="52" x2="${60+i*80+18}" y2="88" stroke="#4a5260" stroke-width="2"/>
+      <line x1="${60+i*80+18}" y1="52" x2="${60+i*80-18}" y2="88" stroke="#4a5260" stroke-width="2"/>
+      <circle cx="${60+i*80}" cy="70" r="6" fill="#1a1f26" stroke="#4a5260"/>
+    `).join('')}
+    <rect x="16" y="34" width="248" height="3" fill="#7CF6FF" opacity=".6"/>
+    <text x="140" y="124" text-anchor="middle" font-family="Inter" font-size="9" font-weight="700" fill="#5A626D" letter-spacing="2">FORGE / AIO 360</text>
+  </svg>`,
+  case: () => `<svg viewBox="0 0 160 200" xmlns="http://www.w3.org/2000/svg">
+    <rect x="24" y="16" width="112" height="168" rx="3" fill="#0a0c10" stroke="#3a4250"/>
+    <rect x="32" y="24" width="96" height="152" fill="#1a1f26" stroke="#2A3038"/>
+    <rect x="40" y="32" width="80" height="138" fill="#0E1116" stroke="#2A3038"/>
+    <rect x="44" y="38" width="72" height="4" fill="#7CF6FF" opacity=".8"/>
+    <rect x="44" y="160" width="72" height="4" fill="#7CF6FF" opacity=".5"/>
+    <rect x="50" y="50" width="60" height="8" rx="1" fill="#3a4250"/>
+    <rect x="50" y="62" width="60" height="40" fill="#1a1f26" stroke="#2A3038"/>
+    <rect x="50" y="108" width="60" height="20" fill="#1a1f26" stroke="#2A3038"/>
+    <rect x="50" y="134" width="60" height="20" fill="#1a1f26" stroke="#2A3038"/>
+    <circle cx="80" cy="82" r="6" fill="#0E1116" stroke="#3a4250"/>
+    <text x="80" y="186" text-anchor="middle" font-family="JetBrains Mono" font-size="6" fill="#5A626D" letter-spacing="2">FORGE / ATX</text>
+  </svg>`,
+};
+
+/* ============ Realistic Hero PC SVG ============ */
+const HERO_PC_SVG = `<svg viewBox="0 0 480 600" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="metal" x1="0" x2="1" y1="0" y2="0">
+      <stop offset="0" stop-color="#181c22"/><stop offset=".5" stop-color="#22272e"/><stop offset="1" stop-color="#0e1116"/>
+    </linearGradient>
+    <linearGradient id="glass" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#0a0c10" stop-opacity=".9"/><stop offset="1" stop-color="#161a20" stop-opacity=".7"/>
+    </linearGradient>
+    <linearGradient id="rgb" x1="0" x2="1" y1="0" y2="0">
+      <stop offset="0" stop-color="#7CF6FF" stop-opacity="0"/>
+      <stop offset=".5" stop-color="#7CF6FF"/>
+      <stop offset="1" stop-color="#7CF6FF" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="glow"><feGaussianBlur stdDeviation="3"/></filter>
+    <radialGradient id="fanGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#7CF6FF" stop-opacity=".5"/>
+      <stop offset="1" stop-color="#7CF6FF" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- floor reflection -->
+  <ellipse cx="240" cy="572" rx="180" ry="14" fill="#7CF6FF" opacity=".12" filter="url(#glow)"/>
+
+  <!-- chassis outer frame (Lian Li O11 style) -->
+  <rect x="60" y="40" width="360" height="520" rx="6" fill="url(#metal)" stroke="#2a3038"/>
+
+  <!-- top vent slats -->
+  <g stroke="#0a0c10" stroke-width="1.5">
+    ${Array.from({length:20},(_,i)=>`<line x1="${78+i*16}" y1="44" x2="${78+i*16}" y2="58"/>`).join('')}
+  </g>
+
+  <!-- front IO -->
+  <g transform="translate(72,68)">
+    <circle cx="6" cy="0" r="3" fill="#0a0c10" stroke="#3a4250"/>
+    <rect x="14" y="-2" width="10" height="4" rx="1" fill="#0a0c10" stroke="#3a4250"/>
+    <rect x="28" y="-2" width="12" height="4" rx="1" fill="#0a0c10" stroke="#3a4250"/>
+    <circle cx="50" cy="0" r="2" fill="#7CF6FF"/>
+  </g>
+
+  <!-- glass side panel (tinted) -->
+  <rect x="72" y="80" width="336" height="438" rx="3" fill="url(#glass)" stroke="#2a3038"/>
+
+  <!-- glass corner highlights -->
+  <line x1="76" y1="86" x2="76" y2="510" stroke="#ffffff" stroke-opacity=".06" stroke-width="2"/>
+  <line x1="76" y1="86" x2="402" y2="86" stroke="#ffffff" stroke-opacity=".05" stroke-width="1"/>
+
+  <!-- inside: motherboard plate (right side, holds mobo) -->
+  <rect x="88" y="96" width="220" height="320" rx="2" fill="#0a0c10" stroke="#1f242c"/>
+
+  <!-- motherboard (PCB) -->
+  <rect x="98" y="106" width="200" height="290" rx="2" fill="#0c1410" stroke="#1c2826"/>
+
+  <!-- CPU socket area -->
+  <rect x="124" y="124" width="60" height="60" rx="3" fill="#1a1f26" stroke="#2a3038"/>
+  <rect x="130" y="130" width="48" height="48" rx="2" fill="#0E1116"/>
+  <text x="154" y="158" text-anchor="middle" font-family="Inter" font-size="8" font-weight="700" fill="#7CF6FF">CPU</text>
+
+  <!-- AIO cooler (top) -->
+  <rect x="92" y="100" width="212" height="22" fill="#161a20" stroke="#2a3038"/>
+  ${[0,1,2].map(i=>`
+    <circle cx="${134+i*60}" cy="111" r="9" fill="#0a0c10" stroke="#2a3038"/>
+    <circle cx="${134+i*60}" cy="111" r="7" fill="url(#fanGlow)" opacity=".7"/>
+    <g style="transform-origin: ${134+i*60}px 111px; animation: spin ${2.6 + i*0.3}s linear infinite;">
+      <line x1="${134+i*60-7}" y1="111" x2="${134+i*60+7}" y2="111" stroke="#4a5260" stroke-width="1.5"/>
+      <line x1="${134+i*60}" y1="104" x2="${134+i*60}" y2="118" stroke="#4a5260" stroke-width="1.5"/>
+    </g>
+  `).join('')}
+  <rect x="92" y="120" width="212" height="2" fill="url(#rgb)" opacity=".6"/>
+
+  <!-- RAM sticks (4) -->
+  <g>
+    ${[0,1,2,3].map(i=>`
+      <rect x="${198+i*16}" y="120" width="12" height="60" rx="1" fill="#161a20" stroke="#2a3038"/>
+      <rect x="${198+i*16}" y="120" width="12" height="6" fill="#7CF6FF" opacity=".75"/>
+    `).join('')}
+  </g>
+
+  <!-- chipset heatsink -->
+  <rect x="124" y="200" width="48" height="48" rx="3" fill="#1a1f26" stroke="#2a3038"/>
+  <rect x="130" y="206" width="36" height="36" rx="1" fill="#0E1116"/>
+
+  <!-- PCIe slot (visible above GPU mount) -->
+  <rect x="108" y="270" width="180" height="4" fill="#3a4250"/>
+  <rect x="108" y="278" width="60" height="3" fill="#3a4250"/>
+
+  <!-- GPU (horizontal, modern triple-fan card) -->
+  <g>
+    <rect x="106" y="288" width="190" height="60" rx="3" fill="#1a1f26" stroke="#3a4250"/>
+    <rect x="110" y="292" width="182" height="52" rx="2" fill="#0a0c10" stroke="#2a3038"/>
+    ${[0,1,2].map(i=>`
+      <circle cx="${142+i*52}" cy="318" r="18" fill="#0a0c10" stroke="#3a4250"/>
+      <g style="transform-origin: ${142+i*52}px 318px; animation: spin ${2 + i*0.4}s linear infinite ${i===1?'reverse':''};">
+        <line x1="${142+i*52-15}" y1="318" x2="${142+i*52+15}" y2="318" stroke="#4a5260" stroke-width="2"/>
+        <line x1="${142+i*52}" y1="303" x2="${142+i*52}" y2="333" stroke="#4a5260" stroke-width="2"/>
+        <line x1="${142+i*52-11}" y1="307" x2="${142+i*52+11}" y2="329" stroke="#4a5260" stroke-width="1.5"/>
+        <line x1="${142+i*52+11}" y1="307" x2="${142+i*52-11}" y2="329" stroke="#4a5260" stroke-width="1.5"/>
+      </g>
+      <circle cx="${142+i*52}" cy="318" r="5" fill="#1a1f26" stroke="#4a5260"/>
+    `).join('')}
+    <!-- RGB strip on top of GPU -->
+    <rect x="110" y="346" width="182" height="2" fill="url(#rgb)" opacity=".8"/>
+    <text x="200" y="296" text-anchor="middle" font-family="Inter" font-size="6" font-weight="700" fill="#5A626D" letter-spacing="2">FORGE / RTX</text>
+  </g>
+
+  <!-- second PCIe -->
+  <rect x="108" y="362" width="120" height="3" fill="#3a4250"/>
+
+  <!-- PSU shroud (bottom) -->
+  <rect x="88" y="418" width="220" height="74" rx="2" fill="#0a0c10" stroke="#1f242c"/>
+  <rect x="92" y="422" width="212" height="66" rx="1" fill="#161a20" stroke="#2a3038"/>
+  <text x="100" y="462" font-family="Inter" font-size="9" font-weight="700" fill="#5A626D" letter-spacing="2">FORGE</text>
+  <text x="100" y="476" font-family="JetBrains Mono" font-size="7" fill="#5A626D" letter-spacing="2">850W · 80+ PLATINUM</text>
+  <!-- PSU fan grille (hidden behind shroud, decorative slots) -->
+  <g stroke="#0a0c10" stroke-width="1">
+    ${Array.from({length:14},(_,i)=>`<line x1="${220+i*6}" y1="430" x2="${220+i*6}" y2="478"/>`).join('')}
+  </g>
+
+  <!-- left vertical RGB strip (front edge of glass) -->
+  <rect x="60" y="80" width="3" height="438" fill="url(#rgb)" opacity=".6" transform="rotate(90 61.5 80)"/>
+
+  <!-- front RGB stripe -->
+  <rect x="72" y="510" width="336" height="3" fill="url(#rgb)" opacity=".7"/>
+  <rect x="72" y="86" width="336" height="2" fill="url(#rgb)" opacity=".5"/>
+
+  <!-- feet -->
+  <rect x="80" y="556" width="40" height="6" rx="2" fill="#0a0c10"/>
+  <rect x="360" y="556" width="40" height="6" rx="2" fill="#0a0c10"/>
+
+  <!-- power LED -->
+  <circle cx="240" cy="556" r="2" fill="#7CF6FF">
+    <animate attributeName="opacity" values="1;.3;1" dur="2.2s" repeatCount="indefinite"/>
+  </circle>
+
+  <!-- subtle light bleed through glass -->
+  <ellipse cx="240" cy="300" rx="200" ry="40" fill="#7CF6FF" opacity=".04" filter="url(#glow)"/>
+</svg>`;
+
+
+/* ============ VIEWS (Russian) ============ */
+function viewHome(){
+  return `
+    <section class="hero">
+      <div class="container">
+        <div class="hero-grid">
+          <div class="hero-headline">
+            <div class="hero-tag eyebrow"><span class="pulse"></span> Игровые рабочие станции на заказ</div>
+            <h1>
+              <span class="line">Машина, которую</span>
+              <span class="line">вы собрали бы сами.</span>
+            </h1>
+            <p class="lede">FORGE проектирует и собирает игровые системы с хирургической точностью — живая проверка совместимости, прогноз FPS в 12 современных играх и 72-часовой прогон каждой машины.</p>
+            <div class="hero-cta">
+              <a href="#/configurator" class="btn btn-primary">Собрать ПК <span class="arrow">→</span></a>
+              <a href="#/catalog" class="btn">Открыть каталог</a>
+            </div>
+          </div>
+          <aside class="hero-side">
+            <div class="hero-readout">
+              <div class="row"><div class="k">Температура CPU</div><div class="v cyan">48.2°C</div></div>
+              <div class="row"><div class="k">Потребление GPU</div><div class="v">312 Вт</div></div>
+              <div class="row"><div class="k">Пропускная RAM</div><div class="v">89.4 ГБ/с</div></div>
+              <div class="row"><div class="k">Уровень шума</div><div class="v" style="color:var(--green)">0.0 дБ</div></div>
+            </div>
+            <div class="hero-pc">${HERO_PC_SVG}</div>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <section class="sec">
+      <div class="container">
+        <div class="section-head reveal">
+          <div class="label"><span class="eyebrow">01 — Почему FORGE</span><span class="meta">/ четыре принципа</span></div>
+          <h2>Собрано как часы. <br/>Прогнано как сервер.</h2>
+        </div>
+        <div class="pillars reveal">
+          <div class="pillar"><span class="num">01</span><svg class="pillar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 7l9-4 9 4-9 4z"/><path d="M3 12l9 4 9-4"/><path d="M3 17l9 4 9-4"/></svg><div><h4>72-часовой прогон</h4><p>Каждая машина проходит 72 часа теста под нагрузкой — тепло, память, накопители.</p></div></div>
+          <div class="pillar"><span class="num">02</span><svg class="pillar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4h16v6H4z"/><path d="M4 14h16v6H4z"/><circle cx="8" cy="7" r="1" fill="currentColor"/><circle cx="8" cy="17" r="1" fill="currentColor"/></svg><div><h4>Проверка совместимости</h4><p>Сокет, TDP, длина видеокарты, клиренс, запас по питанию — в реальном времени.</p></div></div>
+          <div class="pillar"><span class="num">03</span><svg class="pillar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 12h4l3-8 4 16 3-8h4"/></svg><div><h4>Прогноз FPS</h4><p>Кадры в 12 играх, откалиброванные по десяткам тысяч реальных запусков.</p></div></div>
+          <div class="pillar"><span class="num">04</span><svg class="pillar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 12l2 2 4-4"/></svg><div><h4>Пожизненная поддержка</h4><p>Бесплатная диагностика сборки на весь срок. Меняем, апгрейдим, развиваем.</p></div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="sec">
+      <div class="container">
+        <div class="section-head reveal">
+          <div class="label"><span class="eyebrow">02 — Готовые сборки</span><span class="meta">/ три направления</span></div>
+          <h2>Для тех, кто предпочёл бы не выбирать.</h2>
+        </div>
+        <div class="tiers reveal">
+          <article class="tier">
+            <span class="tier-tag"><span class="dot"></span> Старт · 1080p High</span>
+            <h3 class="tier-name">Cipher</h3>
+            <ul class="tier-spec"><li>Ryzen 5 7600 · 6 ядер</li><li>RTX 4060 · 8 ГБ</li><li>32 ГБ DDR5 6000</li><li>1 ТБ NVMe Gen4</li></ul>
+            <div class="tier-foot"><div class="tier-price">$1 590<small>или $133 × 12 мес</small></div><a class="tier-link" href="#/configurator">Настроить →</a></div>
+          </article>
+          <article class="tier featured">
+            <span class="tier-tag"><span class="dot"></span> Signature · 1440p Ultra</span>
+            <h3 class="tier-name">Nebula</h3>
+            <ul class="tier-spec"><li>Ryzen 7 7800X3D · 8 ядер</li><li>RTX 4070 Ti Super · 16 ГБ</li><li>32 ГБ DDR5 6400 CL30</li><li>2 ТБ Gen5 + AIO 360</li></ul>
+            <div class="tier-foot"><div class="tier-price">$2 990<small>или $250 × 12 мес</small></div><a class="tier-link" href="#/configurator">Настроить →</a></div>
+          </article>
+          <article class="tier">
+            <span class="tier-tag"><span class="dot"></span> Apex · 4K / Pro</span>
+            <h3 class="tier-name">Halcyon</h3>
+            <ul class="tier-spec"><li>Core i9-14900K · 24 ядра</li><li>RTX 4090 · 24 ГБ</li><li>64 ГБ DDR5 7200</li><li>4 ТБ Gen5 + кастом-СВО</li></ul>
+            <div class="tier-foot"><div class="tier-price">$5 890<small>или $491 × 12 мес</small></div><a class="tier-link" href="#/configurator">Настроить →</a></div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="sec">
+      <div class="container">
+        <div class="section-head reveal">
+          <div class="label"><span class="eyebrow">03 — Отзывы</span><span class="meta">/ слово владельцам</span></div>
+          <h2>Письма из мастерской.</h2>
+        </div>
+        <div class="reviews reveal">
+          <article class="review"><p class="quote">«Старая сборка гудела как фен. Nebula тянет 480 Вт в Cyberpunk, и я её не слышу за шумом батареи.»</p><div class="by"><div class="avatar">АС</div><div><div class="by-name">Артём Соколов</div><div class="by-meta">Nebula · СПб</div></div></div></article>
+          <article class="review"><p class="quote">«Проверка совместимости поймала зазор между кулером и памятью, который я пропустил. Сэкономила 14 часов пересборки.»</p><div class="by"><div class="avatar">МК</div><div><div class="by-name">Марк Кёлер</div><div class="by-meta">Custom Apex · Берлин</div></div></div></article>
+          <article class="review"><p class="quote">«Рендерю Blender по 10 часов. 14900K стабильно держит ниже 84°C без троттлинга. Невероятно тихо для такой производительности.»</p><div class="by"><div class="avatar">ЮТ</div><div><div class="by-name">Юна Такахаси</div><div class="by-meta">Halcyon · Осака</div></div></div></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="sec">
+      <div class="container">
+        <div class="section-head reveal">
+          <div class="label"><span class="eyebrow">04 — Вопросы</span><span class="meta">/ часто спрашивают</span></div>
+          <h2>Ответы до того, как спросите.</h2>
+        </div>
+        <div class="faq-grid reveal">
+          <details open><summary><h4>Сколько ждать сборку?</h4><span class="plus">+</span></summary><p>Готовые тиры собираем за 5 рабочих дней. Кастомные конфигурации — 7–14 дней (полный 72-часовой прогон). Трекинг доступен сразу после оплаты.</p></details>
+          <details><summary><h4>Что если детали несовместимы?</h4><span class="plus">+</span></summary><p>Конфигуратор не даст собрать несовместимое: проверяем сокет, TDP, длину GPU, клиренс AIO, запас по питанию, поддерживаемые частоты памяти.</p></details>
+          <details><summary><h4>Есть рассрочка?</h4><span class="plus">+</span></summary><p>До 24 месяцев под 0% с нашим партнёром. Сумма ежемесячного платежа обновляется под итогом конфигуратора.</p></details>
+          <details><summary><h4>Условия гарантии?</h4><span class="plus">+</span></summary><p>3 года на компоненты, пожизненная гарантия на работу. RMA через одну заявку — присылаем замену до того, как заберём старое.</p></details>
+        </div>
+      </div>
+    </section>
+  `;
+}
+
+function viewConfigurator(){
+  return `
+    <section class="sec" style="padding: 50px 0;">
+      <div class="container">
+        <div class="section-head reveal">
+          <div class="label"><span class="eyebrow">Конфигуратор</span><span class="meta">/ живая совместимость · живая цена</span></div>
+          <h2>Восемь решений. Бесконечно вариантов.</h2>
+        </div>
+        <div class="presets reveal" id="presets">
+          <button class="preset" data-preset="esports">Киберспорт · 1080p</button>
+          <button class="preset active" data-preset="nebula">Nebula · 1440p</button>
+          <button class="preset" data-preset="halcyon">Halcyon · 4K</button>
+          <button class="preset" data-preset="apex">Apex · 5090</button>
+          <button class="preset" data-preset="creator">Креатор · ML</button>
+          <button class="preset" data-preset="clear">Сбросить</button>
+        </div>
+        <div class="cfg-layout">
+          <div class="slots" id="slots"></div>
+          <aside class="summary">
+            <h3>Ваша сборка <small id="alertCount">Всё в порядке</small></h3>
+            <div class="score-ring">
+              <div class="ring">
+                <svg viewBox="0 0 88 88" width="88" height="88">
+                  <circle cx="44" cy="44" r="38" class="track" stroke-width="6"/>
+                  <circle cx="44" cy="44" r="38" class="bar" id="scoreBar" stroke-width="6" stroke-dasharray="239" stroke-dashoffset="100"/>
+                </svg>
+                <div class="val" id="scoreVal">82</div>
+              </div>
+              <div class="score-meta">
+                <div class="lbl">FORGE-Score™</div>
+                <div class="tag" id="scoreTag">Сбалансировано</div>
+              </div>
+            </div>
+            <div class="metrics">
+              <div class="metric"><div class="k">Потребление</div><div class="v"><span id="mTdp">—</span><small> Вт</small></div></div>
+              <div class="metric"><div class="k">Реком. PSU</div><div class="v"><span id="mPsu">—</span><small> Вт</small></div></div>
+              <div class="metric"><div class="k">Запас</div><div class="v"><span id="mHead">—</span><small> %</small></div></div>
+              <div class="metric"><div class="k">Готово</div><div class="v"><span id="mComp">0</span><small> / 8</small></div></div>
+            </div>
+            <div style="margin-top: 22px;">
+              <div class="eyebrow" style="margin-bottom: 12px;">FPS · 1440p Ultra</div>
+              <div class="fps-list" id="fpsList"></div>
+            </div>
+            <div class="summary-total">
+              <span class="k">Итого</span>
+              <div class="v" style="text-align:right"><span id="totalVal">0</span><small id="installVal">или $0 × 12 мес</small></div>
+            </div>
+            <div class="summary-cta">
+              <button class="btn btn-primary" id="addCart">В корзину <span class="arrow">→</span></button>
+              <button class="btn" id="saveBuild">Сохранить</button>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </section>
+  `;
+}
+
+function viewCatalog(){
+  return `
+    <section class="cat-head">
+      <div class="container">
+        <div class="crumb"><span>FORGE</span><span class="sep">/</span><b>КАТАЛОГ</b><span class="sep">/</span><span id="crumbCat">Все компоненты</span></div>
+        <div class="cat-title-row reveal">
+          <div><span class="eyebrow">Компоненты · 2026</span><h1 style="margin-top: 16px;">Библиотека отобранных деталей.</h1></div>
+          <div class="cat-count"><div class="n" id="totalN">—</div><div class="l">позиций в каталоге</div></div>
+        </div>
+        <div class="tabs" id="catTabs"></div>
+      </div>
+    </section>
+    <div class="container">
+      <div class="cat-layout">
+        <aside class="filters reveal">
+          <div class="filter-title">Фильтры <button class="filter-reset" id="resetFilters">сброс</button></div>
+          <div class="filter-group"><div class="filter-title">Бренд</div><div id="brandList"></div></div>
+          <div class="filter-group"><div class="filter-title">Цена ($)</div><div class="price-range"><input type="number" id="priceMin" placeholder="от"/><span>—</span><input type="number" id="priceMax" placeholder="до"/></div></div>
+          <div class="filter-group"><div class="filter-title">Наличие</div><label class="f-check"><input type="checkbox" id="stockOnly"/><span class="box"></span><span class="lab">Только в наличии</span></label></div>
+        </aside>
+        <div>
+          <div class="results-head reveal">
+            <div class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input type="text" id="searchInput" placeholder="Поиск компонентов..."/></div>
+            <div class="sort-row">
+              <span class="lab">Сортировка</span>
+              <select class="select-mini" id="sortSel">
+                <option value="featured">Рекомендуемые</option>
+                <option value="priceAsc">Цена · по возрастанию</option>
+                <option value="priceDesc">Цена · по убыванию</option>
+                <option value="perfDesc">Производительность</option>
+                <option value="newest">Новинки</option>
+              </select>
+            </div>
+          </div>
+          <div class="grid reveal" id="grid"></div>
+          <div class="pagination" id="pagination"></div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function viewProduct(){
+  return `
+    <div class="container">
+      <div class="prod-head">
+        <a class="back-link" href="#/catalog">← К каталогу</a>
+        <div class="crumb"><span>FORGE</span><span class="sep">/</span><span>КАТАЛОГ</span><span class="sep">/</span><b id="prodCrumb">Товар</b></div>
+      </div>
+      <div class="prod-layout">
+        <div class="gallery">
+          <div class="gallery-main" id="galleryMain"></div>
+          <div class="gallery-thumbs" id="galleryThumbs"></div>
+        </div>
+        <div class="prod-info">
+          <div class="prod-brand" id="prodBrand">Бренд</div>
+          <h1 id="prodName">Название</h1>
+          <p class="prod-strap" id="prodStrap"></p>
+          <div class="prod-price-row">
+            <div class="prod-price" id="prodPrice">$0</div>
+            <div class="prod-instal" id="prodInstal">или $0 × 12 мес</div>
+          </div>
+          <div class="prod-cta-row">
+            <button class="btn btn-primary">В корзину <span class="arrow">→</span></button>
+            <a class="btn" href="#/configurator">В сборку</a>
+            <button class="btn">Сравнить</button>
+          </div>
+          <div class="prod-meta" id="prodMeta"></div>
+          <div class="tab-row" id="prodTabs">
+            <button class="on" data-tab="specs">Характеристики</button>
+            <button data-tab="bench">Тесты</button>
+            <button data-tab="fps">FPS · 12 игр</button>
+            <button data-tab="reviews">Отзывы <span style="margin-left:6px; color: var(--ink-500);" id="revCount">0</span></button>
+          </div>
+          <div class="tab-body">
+            <section class="show" id="tab-specs"><div class="spec-table" id="specTable"></div></section>
+            <section id="tab-bench"><div class="bench-list" id="benchList"></div></section>
+            <section id="tab-fps">
+              <div class="fps-table">
+                <table>
+                  <thead><tr><th>Игра</th><th>1080p</th><th>1440p</th><th>2160p</th><th>Пресет</th></tr></thead>
+                  <tbody id="fpsBody"></tbody>
+                </table>
+              </div>
+            </section>
+            <section id="tab-reviews"><div class="rev-list" id="revList"></div></section>
+          </div>
+        </div>
+      </div>
+      <section class="related-section">
+        <div class="cat-title-row" style="margin-bottom: 18px;">
+          <h2>Похожие товары</h2>
+          <a class="back-link" href="#/catalog">Ещё →</a>
+        </div>
+        <div class="related-grid" id="relatedGrid"></div>
+      </section>
+    </div>
+  `;
+}
+
+function viewViewer(){
+  return `
+    <div class="viewer-page">
+      <div class="viewer-app">
+        <aside class="side-l">
+          <div class="panel-title">Компоненты / 06</div>
+          <div class="comp-list" id="compList"></div>
+          <div class="panel-title" style="margin-top:6px;">Управление</div>
+          <p style="font-size:12px; color:var(--ink-400); line-height:1.5; margin:0;">Кликните по компоненту чтобы выделить. Зажмите ЛКМ и тяните чтобы вращать, колесо для зума, ПКМ для панорамирования.</p>
+        </aside>
+        <main class="stage">
+          <div class="viewer-loading" id="viewerLoading"><div class="spinner"></div><span>Загрузка 3D-сцены</span></div>
+          <canvas id="viewerCanvas"></canvas>
+          <div class="viewbox" aria-hidden="true"><i></i></div>
+          <div class="hud" aria-hidden="true">
+            <div class="c c-tl">▲ КАМЕРА · СВОБОДНАЯ</div>
+            <div class="c c-tr"><span id="hudFps">— FPS</span> ●</div>
+            <div class="c c-bl">SHADER v2.1.0 · WebGL2</div>
+            <div class="c c-br"><span id="hudRot">000°</span></div>
+          </div>
+          <div id="spots" style="position:absolute; inset:0; pointer-events:none;"></div>
+        </main>
+        <aside class="side-r">
+          <div class="panel-title">Выбрано</div>
+          <div class="spec-card" id="specCard"></div>
+          <div class="panel-title" style="margin-top:6px;">FPS · 1440p Ultra</div>
+          <div id="fpsMini" style="display:flex; flex-direction:column; gap:10px;"></div>
+        </aside>
+        <footer class="viewer-bottom">
+          <div class="tools">
+            <button class="tool on" id="tAutorot"><span class="sw"></span>Авто-вращение</button>
+            <button class="tool on" id="tFans"><span class="sw"></span>Вентиляторы</button>
+            <button class="tool on" id="tRgb"><span class="sw"></span>RGB пульс</button>
+            <button class="tool" id="tWire"><span class="sw"></span>Каркас</button>
+          </div>
+          <div class="slider-row">
+            <span class="lab">Свет</span>
+            <input type="range" id="brightness" min="0" max="200" value="100"/>
+          </div>
+          <div class="swatches">
+            <button class="swatch on" data-color="#7CF6FF" style="background:#7CF6FF"></button>
+            <button class="swatch" data-color="#FF5DC8" style="background:#FF5DC8"></button>
+            <button class="swatch" data-color="#A57CFF" style="background:#A57CFF"></button>
+            <button class="swatch" data-color="#7EE787" style="background:#7EE787"></button>
+            <button class="swatch" data-color="#FFB454" style="background:#FFB454"></button>
+            <button class="swatch" data-color="#FF4D5E" style="background:#FF4D5E"></button>
+          </div>
+        </footer>
+      </div>
+    </div>
+  `;
+}
+
+
+/* ============ CONFIGURATOR MOUNT ============ */
+function mountConfigurator(){
+  const slotsEl = $("#slots");
+  function render(){
+    const sel = APP.cfg.selection;
+    const issues = checkCompatibility(sel);
+    const byslot = {}; issues.forEach(i => (byslot[i.slot] ||= []).push(i));
+    slotsEl.innerHTML = SLOTS.map((slot, idx) => {
+      const part = findPart(slot.cat, sel[slot.key]);
+      const sis = byslot[slot.key] || [];
+      const worst = sis.some(s=>s.severity==="error") ? "error" : sis.some(s=>s.severity==="warn") ? "warn" : "";
+      return `
+        <div class="slot ${part?"":"slot-empty"} ${worst}">
+          <div class="slot-num">0${idx+1}</div>
+          <div class="slot-meta">
+            <div class="slot-cat">${slot.label} ${worst==='error'?'<span class="severity error">конфликт</span>':worst==='warn'?'<span class="severity warn">внимание</span>':''}</div>
+            <div class="slot-name">${part?part.name:"Выберите компонент"}</div>
+            <div class="slot-sub">${slot.sub}</div>
+          </div>
+          <div class="slot-action">
+            <div class="slot-price">${part?usd(part.price):"—"}</div>
+            <select data-slot="${slot.key}">
+              <option value="">— выбрать —</option>
+              ${CATALOG[slot.cat].map(p=>`<option value="${p.id}" ${p.id===sel[slot.key]?"selected":""}>${p.name} · ${usd(p.price)}</option>`).join("")}
+            </select>
+          </div>
+          ${sis.map(i=>`<div class="alert-rail ${i.severity}"><span class="icon">${i.severity==="error"?"⨯":"⚠"}</span><span>${i.msg}</span></div>`).join("")}
+        </div>`;
+    }).join("");
+    $$("select", slotsEl).forEach(s => s.addEventListener('change', e => {
+      APP.cfg.selection[e.target.dataset.slot] = e.target.value || null;
+      $$(".preset").forEach(p => p.classList.remove("active"));
+      render();
+    }));
+    const m = computeMetrics(sel);
+    const filled = SLOTS.filter(s => sel[s.key]).length;
+    $("#mTdp").textContent = m.tdp;
+    $("#mPsu").textContent = m.recPsu;
+    $("#mHead").textContent = m.headroom;
+    $("#mComp").textContent = filled;
+    $("#scoreVal").textContent = m.score;
+    const dash = 239;
+    $("#scoreBar").setAttribute("stroke-dashoffset", String(dash - (dash * m.score/100)));
+    const tag = $("#scoreTag"); tag.classList.remove("warn","error");
+    if (issues.some(i=>i.severity==="error")){ tag.textContent="Есть конфликты"; tag.classList.add("error"); }
+    else if (issues.some(i=>i.severity==="warn")){ tag.textContent="Есть замечания"; tag.classList.add("warn"); }
+    else if (m.score >= 90) tag.textContent="Исключительно";
+    else if (m.score >= 75) tag.textContent="Сбалансировано";
+    else if (m.score >= 50) tag.textContent="Уверенно";
+    else tag.textContent="Стартовая";
+    $("#alertCount").textContent = issues.length === 0 ? "Всё в порядке" : `${issues.length} замечан${issues.length===1?'ие':'ия'}`;
+    $("#totalVal").textContent = usd(m.total);
+    $("#installVal").textContent = m.total > 0 ? `или ${usd(Math.round(m.total/12))} × 12 мес` : "—";
+    const fps = computeFps(sel);
+    const maxFps = Math.max(60, ...fps.map(f=>f.fps));
+    $("#fpsList").innerHTML = fps.map(g => `
+      <div class="fps">
+        <div class="name">${g.name} <small>${g.note}</small></div>
+        <div class="val">${g.fps>0?g.fps:"—"}<small style="font-family:var(--mono); color:var(--ink-500); font-size:11px; margin-left:6px; font-weight:400;">FPS</small></div>
+        <div class="fps-bar"><i style="width:${(g.fps/maxFps)*100}%"></i></div>
+      </div>`).join("");
+  }
+  $$(".preset").forEach(b => b.addEventListener('click', () => {
+    $$(".preset").forEach(x => x.classList.remove("active")); b.classList.add("active");
+    APP.cfg.selection = { ...PRESETS[b.dataset.preset] }; render();
+  }));
+  $("#saveBuild")?.addEventListener('click', () => {
+    try { localStorage.setItem("forge:build", JSON.stringify(APP.cfg.selection)); } catch(e){}
+    const btn = $("#saveBuild"); btn.textContent = "Сохранено ✓"; setTimeout(()=>btn.textContent="Сохранить", 1500);
+  });
+  $("#addCart")?.addEventListener('click', () => {
+    const blockers = checkCompatibility(APP.cfg.selection).filter(i=>i.severity==="error");
+    const btn = $("#addCart");
+    if (blockers.length){ btn.innerHTML="Сначала исправьте конфликты"; setTimeout(()=>btn.innerHTML='В корзину <span class="arrow">→</span>', 2000); return; }
+    btn.innerHTML = "Добавлено ✓"; setTimeout(()=>btn.innerHTML='В корзину <span class="arrow">→</span>', 1500);
+  });
+  render();
+}
+
+/* ============ CATALOG MOUNT ============ */
+function mountCatalog(){
+  function applyFilters(){
+    let list = PRODUCTS.slice();
+    const c = APP.cat;
+    if (c.category !== 'all') list = list.filter(p => p.cat === c.category);
+    if (c.brands.size) list = list.filter(p => c.brands.has(p.brand));
+    if (c.priceMin != null) list = list.filter(p => p.price >= c.priceMin);
+    if (c.priceMax != null) list = list.filter(p => p.price <= c.priceMax);
+    if (c.stockOnly) list = list.filter(p => p.stock === 'in');
+    if (c.query){ const q = c.query.toLowerCase(); list = list.filter(p => (p.name+' '+p.brand+' '+p.sub).toLowerCase().includes(q)); }
+    switch (c.sort){
+      case 'priceAsc':  list.sort((a,b)=>a.price-b.price); break;
+      case 'priceDesc': list.sort((a,b)=>b.price-a.price); break;
+      case 'perfDesc':  list.sort((a,b)=>b.perf-a.perf); break;
+      case 'newest':    list.sort((a,b)=> (b.isNew?1:0) - (a.isNew?1:0)); break;
+      default: list.sort((a,b)=> (b.isNew?1:0) - (a.isNew?1:0));
+    }
+    return list;
+  }
+  function renderTabs(){
+    const counts = CATEGORIES.map(c => ({...c, n: c.id==="all" ? PRODUCTS.length : PRODUCTS.filter(p=>p.cat===c.id).length}));
+    $("#catTabs").innerHTML = counts.map(c=>`<button class="tab ${c.id===APP.cat.category?'active':''}" data-cat="${c.id}">${c.label}<span class="ct">/ ${String(c.n).padStart(2,'0')}</span></button>`).join('');
+    $$("#catTabs .tab").forEach(b => b.addEventListener('click', () => {
+      APP.cat.category = b.dataset.cat; APP.cat.page = 1; APP.cat.brands.clear(); renderAll();
+    }));
+  }
+  function renderBrands(){
+    const visible = APP.cat.category === 'all' ? PRODUCTS : PRODUCTS.filter(p=>p.cat===APP.cat.category);
+    const bc = {}; visible.forEach(p => bc[p.brand] = (bc[p.brand]||0)+1);
+    const brands = Object.keys(bc).sort();
+    $("#brandList").innerHTML = brands.map(b => `
+      <label class="f-check"><input type="checkbox" data-brand="${b}" ${APP.cat.brands.has(b)?'checked':''}/><span class="box"></span><span class="lab">${b}</span><span class="ct">/ ${bc[b]}</span></label>`).join('');
+    $$("#brandList input").forEach(inp => inp.addEventListener('change', () => {
+      const b = inp.dataset.brand;
+      if (inp.checked) APP.cat.brands.add(b); else APP.cat.brands.delete(b);
+      APP.cat.page = 1; renderResults();
+    }));
+  }
+  function renderResults(){
+    const list = applyFilters();
+    $("#totalN").textContent = list.length;
+    $("#crumbCat").textContent = CATEGORIES.find(c=>c.id===APP.cat.category).label;
+    const start = (APP.cat.page-1)*APP.cat.perPage;
+    const pageList = list.slice(start, start + APP.cat.perPage);
+    const grid = $("#grid");
+    if (pageList.length === 0){
+      grid.innerHTML = `<div class="empty"><h3>Ничего не найдено</h3><p>Попробуйте снять фильтр или расширить диапазон цен.</p></div>`;
+    } else {
+      grid.innerHTML = pageList.map(p => {
+        const stockCls = p.stock === 'in' ? '' : (p.stock === 'low' ? 'low' : 'out');
+        const stockLab = p.stock === 'in' ? 'в наличии' : (p.stock === 'low' ? 'мало' : 'нет');
+        const brandCls = ({AMD:'amd', Intel:'intel', NVIDIA:'nvidia'})[p.brand] || '';
+        return `<article class="card" data-id="${p.id}">
+          <div class="card-stock ${stockCls}"><span class="pdot"></span>${stockLab}</div>
+          <div class="card-tag ${brandCls}"><span class="dot"></span>${p.brand} · ${p.cat.toUpperCase()}</div>
+          <div class="card-img">${ART[p.cat]?ART[p.cat]():''}</div>
+          <div class="card-name">${p.name}</div>
+          <div class="card-sub">${p.sub}</div>
+          <div class="card-foot"><div class="card-price">${usd(p.price)}</div><div class="card-cta">Подробнее →</div></div>
+        </article>`;
+      }).join('');
+    }
+    $$('#grid .card').forEach(c => c.addEventListener('click', () => { location.hash = '#/catalog/' + c.dataset.id; }));
+    const totalPages = Math.max(1, Math.ceil(list.length / APP.cat.perPage));
+    if (APP.cat.page > totalPages) APP.cat.page = totalPages;
+    if (totalPages <= 1){ $("#pagination").innerHTML = ''; return; }
+    const pages = [];
+    for (let i=1; i<=totalPages; i++) pages.push(i);
+    $("#pagination").innerHTML = `
+      <div class="page-info">Показано ${start+1}–${Math.min(start+APP.cat.perPage, list.length)} из ${list.length}</div>
+      <div class="pages">
+        <button class="page-btn" data-p="${Math.max(1,APP.cat.page-1)}">←</button>
+        ${pages.map(p=>`<button class="page-btn ${p===APP.cat.page?'on':''}" data-p="${p}">${p}</button>`).join('')}
+        <button class="page-btn" data-p="${Math.min(totalPages,APP.cat.page+1)}">→</button>
+      </div>`;
+    $$('#pagination .page-btn').forEach(b => b.addEventListener('click', () => { APP.cat.page = parseInt(b.dataset.p,10); renderResults(); window.scrollTo({top:0,behavior:'smooth'}); }));
+  }
+  function renderAll(){ renderTabs(); renderBrands(); renderResults(); }
+  $("#searchInput")?.addEventListener('input', e => { APP.cat.query = e.target.value.trim(); APP.cat.page = 1; renderResults(); });
+  $("#sortSel")?.addEventListener('change', e => { APP.cat.sort = e.target.value; renderResults(); });
+  $("#priceMin")?.addEventListener('input', e => { const v = e.target.value === '' ? null : parseInt(e.target.value,10); APP.cat.priceMin = isNaN(v) ? null : v; APP.cat.page = 1; renderResults(); });
+  $("#priceMax")?.addEventListener('input', e => { const v = e.target.value === '' ? null : parseInt(e.target.value,10); APP.cat.priceMax = isNaN(v) ? null : v; APP.cat.page = 1; renderResults(); });
+  $("#stockOnly")?.addEventListener('change', e => { APP.cat.stockOnly = e.target.checked; APP.cat.page = 1; renderResults(); });
+  $("#resetFilters")?.addEventListener('click', () => {
+    APP.cat.brands.clear(); APP.cat.priceMin = APP.cat.priceMax = null; APP.cat.stockOnly = false; APP.cat.query = '';
+    $("#searchInput").value = ''; $("#priceMin").value = ''; $("#priceMax").value = ''; $("#stockOnly").checked = false;
+    APP.cat.page = 1; renderAll();
+  });
+  renderAll();
+}
+
+/* ============ PRODUCT MOUNT ============ */
+function mountProduct(id){
+  const p = findProduct(id);
+  if (!p){ location.hash = '#/catalog'; return; }
+  $("#prodCrumb").textContent = p.name;
+  $("#prodBrand").textContent = `${p.brand} · ${p.cat.toUpperCase()}`;
+  $("#prodName").textContent = p.name;
+  $("#prodStrap").textContent = PRODUCT_META[p.cat]?.strap || "";
+  $("#prodPrice").textContent = usd(p.price);
+  $("#prodInstal").textContent = `или ${usd(Math.round(p.price/12))} × 12 мес · 0%`;
+  const art = ART[p.cat] ? ART[p.cat]() : '';
+  $("#galleryMain").innerHTML = art;
+  $("#galleryThumbs").innerHTML = Array.from({length:5},(_,i)=>`<button class="thumb ${i===0?'on':''}" data-i="${i}">${art}</button>`).join('');
+  $$("#galleryThumbs .thumb").forEach(t => t.addEventListener('click', () => {
+    $$("#galleryThumbs .thumb").forEach(x => x.classList.remove('on')); t.classList.add('on');
+  }));
+  $("#prodMeta").innerHTML = p.specs.slice(0,3).map(([k,v])=>`<div class="it"><div class="k">${k}</div><div class="v">${v}</div></div>`).join('');
+  $("#specTable").innerHTML = p.specs.map(([k,v])=>`<div class="row"><div>${k}</div><div>${v}</div></div>`).join('');
+  $("#benchList").innerHTML = p.bench.map(([nm,val,max])=>`
+    <div class="bench-row">
+      <div class="nm">${nm}</div>
+      <div class="bench-bar"><i style="width:0"></i></div>
+      <div class="val">${val.toLocaleString("en-US")}</div>
+    </div>`).join('');
+  requestAnimationFrame(() => {
+    $$("#benchList .bench-bar i").forEach((bar, i) => {
+      const [,val,max] = p.bench[i]; bar.style.width = Math.min(100, val/max*100) + '%';
+    });
+  });
+  const showFps = p.cat === 'gpu' || p.cat === 'cpu';
+  $("#fpsBody").innerHTML = !showFps
+    ? `<tr><td colspan="5" style="color:var(--ink-400); padding:40px; text-align:center;">Прогноз FPS применим только к процессорам и видеокартам.</td></tr>`
+    : FPS_GAMES_TABLE.map(([nm,preset,weight])=>{
+        const base = (p.cat==='gpu') ? p.perf * 1.7 : p.perf * 1.4;
+        const fps1080 = Math.round(base * weight);
+        return `<tr><td class="game">${nm}</td><td class="num">${fps1080}</td><td class="num" style="color:var(--cyan);">${Math.round(fps1080*0.72)}</td><td class="num">${Math.round(fps1080*0.42)}</td><td><span class="badge">${preset}</span></td></tr>`;
+      }).join('');
+  $("#revCount").textContent = `/ ${p.reviews}`;
+  const revs = [
+    {nm:"Артём С.", meta:"СПб · Nebula", body:"Собрано чётко, прогнано как обещали. Тихо под нагрузкой, температуры в норме."},
+    {nm:"Марк К.", meta:"Берлин · Apex", body:"Идеально вписалось в мой корпус. FORGE заранее проверили все размеры."},
+    {nm:"Юна Т.", meta:"Осака · Halcyon", body:"Стабильно держит сустейн 10+ часов рендера. Достойная инвестиция."},
+  ];
+  $("#revList").innerHTML = revs.map(r=>{
+    const init = r.nm.split(' ').map(w=>w[0]).join('').slice(0,2);
+    return `<div class="rev-item"><div class="rev-avatar">${init}</div><div class="rev-content"><div class="head"><span class="nm">${r.nm}</span><span class="meta">${r.meta}</span></div><p class="quote">${r.body}</p></div><div class="rev-stars">${Array(5).fill('<svg viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14l-5-4.87 6.91-1.01z"/></svg>').join('')}</div></div>`;
+  }).join('');
+  const related = PRODUCTS.filter(x => x.cat === p.cat && x.id !== p.id).slice(0,3);
+  $("#relatedGrid").innerHTML = related.map(r => `<article class="card" data-id="${r.id}">
+    <div class="card-tag"><span class="dot"></span>${r.brand} · ${r.cat.toUpperCase()}</div>
+    <div class="card-img">${ART[r.cat]?ART[r.cat]():''}</div>
+    <div class="card-name">${r.name}</div>
+    <div class="card-sub">${r.sub}</div>
+    <div class="card-foot"><div class="card-price">${usd(r.price)}</div><div class="card-cta">Подробнее →</div></div>
+  </article>`).join('');
+  $$('#relatedGrid .card').forEach(c => c.addEventListener('click', ()=>{ location.hash = '#/catalog/' + c.dataset.id; }));
+  $$('#prodTabs button').forEach(b => b.onclick = () => {
+    $$('#prodTabs button').forEach(x => x.classList.remove('on')); b.classList.add('on');
+    $$('.tab-body section').forEach(s => s.classList.remove('show'));
+    $('#tab-' + b.dataset.tab).classList.add('show');
+  });
+}
+
+
+/* ============ 3D VIEWER MOUNT (with robust init) ============ */
+function mountViewer(){
+  // Dispose previous if any
+  if (APP.viewer && APP.viewer.dispose){
+    try { APP.viewer.dispose(); } catch(e){}
+    APP.viewer = null;
+  }
+
+  const COMPONENTS = [
+    { id:"cpu", num:"01", cat:"CPU", name:"Ryzen 7 7800X3D", desc:"8 ядер · 16 потоков · 96 МБ 3D V-Cache. Игровая вариация с увеличенным кэшем — фризы на 1% low исчезают.", specs:[["Ядра","8c/16t"],["TDP","120 Вт"],["Кэш","96 МБ"],["Сокет","AM5"]]},
+    { id:"gpu", num:"02", cat:"GPU", name:"RTX 4070 Ti Super 16GB", desc:"AD103, 8448 CUDA, 16 ГБ GDDR6X на 256-битной шине. Калибровано для нативного 1440p Ultra.", specs:[["Память","16 ГБ"],["TDP","285 Вт"],["Длина","304 мм"],["Шина","256-бит"]]},
+    { id:"ram", num:"03", cat:"ОЗУ", name:"G.Skill Trident Z5 32GB DDR5-6400", desc:"Селектированный Hynix M-die, EXPO 1.4В. Минимальные тайминги для AM5.", specs:[["Объём","32 ГБ"],["Скорость","6400 МТ/с"],["CAS","CL30"]]},
+    { id:"mb",  num:"04", cat:"ПЛАТА", name:"X670E AORUS Elite", desc:"Премиум VRM, четыре M.2 слота, PCIe 5.0 на видеокарту и накопитель.", specs:[["Чипсет","X670E"],["Форм-фактор","ATX"],["M.2","×4"]]},
+    { id:"aio", num:"05", cat:"ОХЛАЖД.", name:"Arctic Liquid Freezer III 360", desc:"Три 120мм P-Series на 360мм радиаторе. Тихо до 240 Вт сустейна.", specs:[["Тип","AIO 360"],["Запас","300 Вт"]]},
+    { id:"psu", num:"06", cat:"БП", name:"Seasonic FOCUS GX 850 Gold", desc:"Полностью модульный, FDB-вентилятор с гибридным режимом.", specs:[["Мощность","850 Вт"],["Сертификат","80+ Gold"]]},
+  ];
+  const FPS_MINI = [
+    { name:"Cyberpunk 2077", note:"RT Ultra", fps:96 },
+    { name:"Alan Wake II",   note:"Path Tracing", fps:78 },
+    { name:"BG3",            note:"Ultra", fps:142 },
+    { name:"MSFS 2024",      note:"Ultra", fps:108 },
+    { name:"CS2",            note:"Max",   fps:410 },
+  ];
+  const ui = { selected:"gpu", autorot:true, fans:true, rgb:true, wire:false, bright:1.0, rgbColor:0x7CF6FF };
+
+  /* Wait for THREE + non-zero canvas size before initializing */
+  function waitForReady(attempt){
+    if (attempt > 100){ console.error('[FORGE viewer] Failed to initialize'); return; }
+    const canvas = document.getElementById('viewerCanvas');
+    if (!canvas){ return; }
+    const stage = canvas.parentElement;
+    const w = stage.clientWidth, h = stage.clientHeight;
+    if (typeof THREE === 'undefined' || w === 0 || h === 0){
+      setTimeout(()=>waitForReady(attempt+1), 50);
+      return;
+    }
+    initThree(canvas, stage, w, h);
+  }
+
+  function initThree(canvas, stage, initW, initH){
+    const loading = document.getElementById('viewerLoading');
+
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias:true, alpha:true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setSize(initW, initH, false);
+    renderer.setClearColor(0x000000, 0);
+
+    const scene = new THREE.Scene();
+    scene.fog = new THREE.Fog(0x07080A, 8, 22);
+
+    const camera = new THREE.PerspectiveCamera(38, initW/initH, 0.1, 100);
+
+    const ambient = new THREE.AmbientLight(0x8090a0, 0.55);
+    scene.add(ambient);
+    const keyLight = new THREE.DirectionalLight(0xffffff, 1.0); keyLight.position.set(6,8,4); scene.add(keyLight);
+    const rimLight = new THREE.PointLight(0x7CF6FF, 1.4, 14); rimLight.position.set(-4,1.5,-3); scene.add(rimLight);
+    const fillLight = new THREE.PointLight(0xFF5DC8, 0.3, 12); fillLight.position.set(5,-1,-2); scene.add(fillLight);
+
+    /* floor + grid */
+    const floor = new THREE.Mesh(new THREE.PlaneGeometry(40,40), new THREE.MeshStandardMaterial({ color:0x0a0c10, metalness:0.4, roughness:0.85 }));
+    floor.rotation.x = -Math.PI/2; floor.position.y = -2.55; scene.add(floor);
+    const grid = new THREE.GridHelper(20, 40, 0x1c2026, 0x14171c); grid.position.y = -2.54; scene.add(grid);
+
+    const tower = new THREE.Group(); scene.add(tower);
+    const matFrame = new THREE.MeshStandardMaterial({ color:0x1a1f26, metalness:0.85, roughness:0.35 });
+    const matGlass = new THREE.MeshStandardMaterial({ color:0x0E1116, metalness:0.1, roughness:0.15, transparent:true, opacity:0.45 });
+    const matDark = new THREE.MeshStandardMaterial({ color:0x0a0c10, metalness:0.6, roughness:0.55 });
+    const matAccent = new THREE.MeshStandardMaterial({ color:0x111418, metalness:0.7, roughness:0.4 });
+    const matRgb = new THREE.MeshStandardMaterial({ color:0x7CF6FF, emissive:0x7CF6FF, emissiveIntensity:1.5 });
+    const matFan = new THREE.MeshStandardMaterial({ color:0x16191e, metalness:0.5, roughness:0.6 });
+    const matMobo = new THREE.MeshStandardMaterial({ color:0x0d100c, metalness:0.3, roughness:0.8 });
+    const W=2.4, H=5.0, D=2.4;
+    function panel(x,y,z,w,h,d,mat){ const m = new THREE.Mesh(new THREE.BoxGeometry(w,h,d), mat); m.position.set(x,y,z); return m; }
+    tower.add(panel(-W/2,0,0,0.06,H,D,matFrame));
+    tower.add(panel(W/2,0,0,0.06,H,D,matFrame));
+    tower.add(panel(0,H/2,0,W,0.06,D,matFrame));
+    tower.add(panel(0,-H/2,0,W,0.06,D,matFrame));
+    tower.add(panel(0,0,-D/2,W,H,0.06,matFrame));
+    tower.add(panel(0,0,D/2,W-0.08,H-0.08,0.04,matGlass));
+    tower.add(panel(W/2+0.02,0,0,0.04,H-0.08,D-0.08,matGlass));
+    const rgbStrip = new THREE.Mesh(new THREE.BoxGeometry(W-0.2,0.08,0.02), matRgb.clone()); rgbStrip.position.set(0,-H/2+0.18,D/2+0.04); tower.add(rgbStrip);
+    const rgbStripTop = new THREE.Mesh(new THREE.BoxGeometry(W-0.2,0.06,0.02), matRgb.clone()); rgbStripTop.position.set(0,H/2-0.18,D/2+0.04); tower.add(rgbStripTop);
+    const mobo = new THREE.Mesh(new THREE.BoxGeometry(W-0.5,H-0.8,0.08), matMobo); mobo.position.set(-0.08,0.1,-D/2+0.2); tower.add(mobo);
+    const cpuBlock = new THREE.Mesh(new THREE.BoxGeometry(0.55,0.5,0.12), matDark); cpuBlock.position.set(-0.1,1.4,-D/2+0.32); tower.add(cpuBlock);
+    const cpuRing = new THREE.Mesh(new THREE.TorusGeometry(0.22,0.025,12,48), new THREE.MeshStandardMaterial({ color:0x7CF6FF, emissive:0x7CF6FF, emissiveIntensity:1.2 }));
+    cpuRing.position.set(-0.1,1.4,-D/2+0.4); tower.add(cpuRing);
+    const gpuCard = new THREE.Mesh(new THREE.BoxGeometry(W-0.5,0.35,0.7), matAccent); gpuCard.position.set(-0.05,-0.4,-D/2+0.55); tower.add(gpuCard);
+    const fans = [];
+    for (let i=0; i<3; i++){
+      const fr = new THREE.Mesh(new THREE.RingGeometry(0.12,0.16,32), matFan);
+      fr.position.set(-0.6+i*0.6,-0.4,-D/2+0.92); tower.add(fr);
+      const fg = new THREE.Group(); fg.position.copy(fr.position);
+      const b1 = new THREE.Mesh(new THREE.BoxGeometry(0.22,0.018,0.04), matFan);
+      const b2 = b1.clone(); b2.rotation.z = Math.PI/2;
+      fg.add(b1,b2); tower.add(fg); fans.push(fg);
+    }
+    const gpuStrip = new THREE.Mesh(new THREE.BoxGeometry(W-0.6,0.04,0.02), matRgb.clone()); gpuStrip.position.set(-0.05,-0.22,-D/2+0.95); tower.add(gpuStrip);
+    const ramGroup = new THREE.Group();
+    for (let i=0; i<4; i++){
+      const stick = new THREE.Mesh(new THREE.BoxGeometry(0.08,0.95,0.05), matAccent); stick.position.set(0.45+i*0.12,1.4,-D/2+0.35); ramGroup.add(stick);
+      const top = new THREE.Mesh(new THREE.BoxGeometry(0.08,0.06,0.05), matRgb.clone()); top.position.set(0.45+i*0.12,1.92,-D/2+0.35); ramGroup.add(top);
+    }
+    tower.add(ramGroup);
+    const psu = new THREE.Mesh(new THREE.BoxGeometry(W-0.2,0.7,D-0.4), matDark); psu.position.set(0,-H/2+0.55,-0.1); tower.add(psu);
+    const aio = new THREE.Mesh(new THREE.BoxGeometry(W-0.3,0.18,D-0.4), matDark); aio.position.set(0,H/2-0.2,-0.1); tower.add(aio);
+    for (let i=0; i<3; i++){
+      const f = new THREE.Mesh(new THREE.RingGeometry(0.16,0.22,24), matFan); f.position.set(-0.65+i*0.65,H/2-0.28,-0.1); f.rotation.x = Math.PI/2; tower.add(f);
+      const fg = new THREE.Group(); fg.position.copy(f.position); fg.rotation.x = Math.PI/2;
+      const b1 = new THREE.Mesh(new THREE.BoxGeometry(0.3,0.02,0.05), matFan);
+      const b2 = b1.clone(); b2.rotation.z = Math.PI/2;
+      fg.add(b1,b2); tower.add(fg); fans.push(fg);
+    }
+    const compMeshes = { cpu:cpuBlock, gpu:gpuCard, ram:ramGroup, mb:mobo, aio:aio, psu:psu };
+
+    /* orbit camera */
+    const orbit = { azimuth:0.7, polar:1.2, radius:9.0, target:new THREE.Vector3(0,0.4,0) };
+    function applyOrbit(){
+      const r = orbit.radius, sp = Math.sin(orbit.polar), cp = Math.cos(orbit.polar), sa = Math.sin(orbit.azimuth), ca = Math.cos(orbit.azimuth);
+      camera.position.set(orbit.target.x + r*sp*sa, orbit.target.y + r*cp, orbit.target.z + r*sp*ca);
+      camera.lookAt(orbit.target);
+    }
+    applyOrbit();
+
+    let dragging = false, lastX = 0, lastY = 0, btn = 0;
+    const onDown = e => { dragging = true; lastX = e.clientX; lastY = e.clientY; btn = e.button; try{canvas.setPointerCapture(e.pointerId);}catch(_){}};
+    const onUp = () => { dragging = false; };
+    const onMove = e => {
+      if (!dragging) return;
+      const dx = (e.clientX - lastX)/200, dy = (e.clientY - lastY)/200;
+      lastX = e.clientX; lastY = e.clientY;
+      if (btn === 2){ orbit.target.x -= dx; orbit.target.y += dy; }
+      else { orbit.azimuth -= dx; orbit.polar = Math.max(0.25, Math.min(Math.PI-0.25, orbit.polar - dy)); ui.autorot = false; document.getElementById('tAutorot')?.classList.remove('on'); }
+    };
+    const onWheel = e => { orbit.radius = Math.max(4.5, Math.min(18, orbit.radius + e.deltaY*0.005)); e.preventDefault(); };
+    const onCtx = e => e.preventDefault();
+    canvas.addEventListener('pointerdown', onDown);
+    canvas.addEventListener('pointerup', onUp);
+    canvas.addEventListener('pointermove', onMove);
+    canvas.addEventListener('wheel', onWheel, { passive:false });
+    canvas.addEventListener('contextmenu', onCtx);
+
+    function resize(){
+      const w = stage.clientWidth, h = stage.clientHeight;
+      if (w === 0 || h === 0) return;
+      renderer.setSize(w, h, false);
+      camera.aspect = w/h; camera.updateProjectionMatrix();
+    }
+    const ro = new ResizeObserver(resize); ro.observe(stage);
+
+    /* hotspots */
+    const spotEl = document.getElementById('spots');
+    const SPOTS = [
+      { id:"cpu", world:new THREE.Vector3(-0.1,1.7,0.0), label:"CPU" },
+      { id:"gpu", world:new THREE.Vector3(-0.05,-0.4,0.55), label:"GPU" },
+      { id:"ram", world:new THREE.Vector3(0.65,1.9,0.0), label:"RAM" },
+      { id:"aio", world:new THREE.Vector3(0,2.35,0.0), label:"AIO" },
+      { id:"psu", world:new THREE.Vector3(0,-2.05,0.0), label:"PSU" },
+    ];
+    SPOTS.forEach(s => {
+      const el = document.createElement('div'); el.className = 'spot'; el.style.pointerEvents = 'auto';
+      el.innerHTML = `<span class="sring"></span><span class="lbl"><b>${s.id.toUpperCase()}</b>${s.label}</span>`;
+      el.addEventListener('click', () => select(s.id));
+      spotEl.appendChild(el); s.el = el;
+    });
+    function updateSpots(){
+      const w = stage.clientWidth, h = stage.clientHeight;
+      SPOTS.forEach(s => {
+        const v = s.world.clone().project(camera);
+        if (v.z > 1 || v.z < -1){ s.el.style.display = 'none'; return; }
+        s.el.style.display = '';
+        s.el.style.left = ((v.x * 0.5 + 0.5) * w) + 'px';
+        s.el.style.top  = ((-v.y * 0.5 + 0.5) * h) + 'px';
+      });
+    }
+
+    function renderCompList(){
+      document.getElementById('compList').innerHTML = COMPONENTS.map(c => `
+        <button class="comp ${c.id===ui.selected?'on':''}" data-id="${c.id}">
+          <span class="nu">${c.num}</span>
+          <div class="meta"><div class="cat">${c.cat}</div><div class="nm">${c.name}</div></div>
+          <span class="cdot"></span>
+        </button>`).join('');
+      document.querySelectorAll('#compList .comp').forEach(b => b.addEventListener('click', () => select(b.dataset.id)));
+    }
+    function renderSpec(){
+      const c = COMPONENTS.find(x => x.id===ui.selected); if (!c) return;
+      document.getElementById('specCard').innerHTML = `
+        <div class="label-line"><span class="id">// ${c.num}</span><span class="pill-mini">${c.cat}</span></div>
+        <h3>${c.name}</h3>
+        <p class="desc">${c.desc}</p>
+        <div class="spec-grid">${c.specs.map(([k,v])=>`<div class="it"><div class="k">${k}</div><div class="v">${v}</div></div>`).join('')}</div>`;
+    }
+    function renderFps(){
+      const max = Math.max(...FPS_MINI.map(g=>g.fps));
+      document.getElementById('fpsMini').innerHTML = FPS_MINI.map(g => `
+        <div class="fps-row">
+          <div class="nm">${g.name} <small style="color:var(--ink-500); margin-left:6px;">${g.note}</small></div>
+          <div class="vv">${g.fps}</div>
+          <div class="fps-bar" style="grid-column:1 / -1;"><i style="width:${g.fps/max*100}%; display:block; height:100%; background: linear-gradient(90deg, var(--cyan-deep), var(--cyan)); box-shadow:0 0 10px rgba(124,246,255,.45);"></i></div>
+        </div>`).join('');
+    }
+    function select(id){
+      ui.selected = id; renderCompList(); renderSpec();
+      Object.keys(compMeshes).forEach(k => {
+        compMeshes[k].traverse(m => {
+          if (m.material && m.material.emissive){
+            m.material = m.material.clone();
+            m.material.emissive = new THREE.Color(k===id ? 0x7CF6FF : 0x000000);
+            m.material.emissiveIntensity = k===id ? 0.3 : 0;
+          }
+        });
+      });
+    }
+    renderCompList(); renderSpec(); renderFps(); select(ui.selected);
+
+    function bindTool(id, key){
+      const el = document.getElementById(id); if (!el) return;
+      el.addEventListener('click', () => {
+        ui[key] = !ui[key]; el.classList.toggle('on', ui[key]);
+        if (key === 'wire') tower.traverse(m => { if (m.isMesh && m.material) m.material.wireframe = ui.wire; });
+      });
+    }
+    bindTool('tAutorot','autorot'); bindTool('tFans','fans'); bindTool('tRgb','rgb'); bindTool('tWire','wire');
+    document.getElementById('brightness')?.addEventListener('input', e => {
+      ui.bright = parseInt(e.target.value,10)/100;
+      keyLight.intensity = 1.0 * ui.bright; ambient.intensity = 0.55 * ui.bright; rimLight.intensity = 1.4 * ui.bright;
+    });
+    document.querySelectorAll('.swatch').forEach(s => s.addEventListener('click', () => {
+      document.querySelectorAll('.swatch').forEach(x => x.classList.remove('on')); s.classList.add('on');
+      ui.rgbColor = parseInt(s.dataset.color.replace('#',''),16);
+      rimLight.color.setHex(ui.rgbColor);
+    }));
+
+    const clock = new THREE.Clock();
+    let stopped = false;
+    let firstFrame = true;
+
+    function tick(){
+      if (stopped) return;
+      const t = clock.getElapsedTime(), dt = clock.getDelta();
+      if (ui.autorot) orbit.azimuth += dt*0.18;
+      applyOrbit();
+      if (ui.fans) fans.forEach((f,i) => f.rotation.z += dt*(8+i*0.4));
+      if (ui.rgb){
+        const pulse = 0.6 + 0.4*Math.sin(t*2.2);
+        const col = new THREE.Color(ui.rgbColor);
+        [rgbStrip, rgbStripTop, gpuStrip].forEach(s => { s.material.emissive = col; s.material.emissiveIntensity = pulse*1.5; });
+        cpuRing.material.emissiveIntensity = 1.0 + 0.6*Math.sin(t*3);
+        rimLight.intensity = (1.4 + 0.3*Math.sin(t*1.4)) * ui.bright;
+      }
+      const hudRot = document.getElementById('hudRot');
+      if (hudRot) hudRot.textContent = String(Math.round((orbit.azimuth*180/Math.PI)%360)).padStart(3,'0') + '°';
+      updateSpots();
+      renderer.render(scene, camera);
+
+      if (firstFrame){
+        firstFrame = false;
+        if (loading) loading.style.display = 'none';
+      }
+      requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+
+    APP.viewer = {
+      dispose(){
+        stopped = true;
+        try { ro.disconnect(); } catch(e){}
+        try { renderer.dispose(); } catch(e){}
+        try { renderer.forceContextLoss(); } catch(e){}
+        canvas.removeEventListener('pointerdown', onDown);
+        canvas.removeEventListener('pointerup', onUp);
+        canvas.removeEventListener('pointermove', onMove);
+        canvas.removeEventListener('wheel', onWheel);
+        canvas.removeEventListener('contextmenu', onCtx);
+      }
+    };
+  }
+
+  /* Kick off initialization after DOM is settled */
+  requestAnimationFrame(() => requestAnimationFrame(() => waitForReady(0)));
+}
+
+/* ============ ROUTER ============ */
+function parseRoute(){
+  const h = location.hash.replace(/^#/, '') || '/';
+  const parts = h.split('/').filter(Boolean);
+  if (parts.length === 0) return { name:'home', params:{} };
+  if (parts[0] === 'configurator') return { name:'configurator', params:{} };
+  if (parts[0] === 'viewer') return { name:'viewer', params:{} };
+  if (parts[0] === 'catalog'){
+    if (parts[1]) return { name:'product', params:{ id: parts[1] } };
+    return { name:'catalog', params:{} };
+  }
+  return { name:'home', params:{} };
+}
+function updateNavActive(name){
+  document.querySelectorAll('#navLinks a').forEach(a => {
+    const r = a.dataset.route;
+    const matches = (r === '/' && name === 'home') ||
+                    (r === '/configurator' && name === 'configurator') ||
+                    (r === '/catalog' && (name === 'catalog' || name === 'product')) ||
+                    (r === '/viewer' && name === 'viewer');
+    a.classList.toggle('active', matches);
+  });
+}
+let currentRoute = null;
+function route(){
+  const r = parseRoute();
+  if (currentRoute && currentRoute.name === 'viewer' && r.name !== 'viewer'){
+    if (APP.viewer && APP.viewer.dispose){ APP.viewer.dispose(); APP.viewer = null; }
+  }
+  currentRoute = r;
+  const outlet = document.getElementById('outlet');
+  const footer = document.getElementById('siteFooter');
+  outlet.style.opacity = 0;
+  setTimeout(() => {
+    if (r.name === 'home'){ outlet.innerHTML = viewHome(); footer.style.display = ''; }
+    else if (r.name === 'configurator'){ outlet.innerHTML = viewConfigurator(); mountConfigurator(); footer.style.display = ''; }
+    else if (r.name === 'catalog'){ outlet.innerHTML = viewCatalog(); mountCatalog(); footer.style.display = ''; }
+    else if (r.name === 'product'){ outlet.innerHTML = viewProduct(); mountProduct(r.params.id); footer.style.display = ''; }
+    else if (r.name === 'viewer'){ outlet.innerHTML = viewViewer(); mountViewer(); footer.style.display = 'none'; }
+    outlet.style.opacity = 1;
+    updateNavActive(r.name);
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); }});
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+    window.scrollTo({ top: 0 });
+  }, 80);
+}
+window.addEventListener('hashchange', route);
+route();
+
+});
+</script>
+</body>
+</html>
